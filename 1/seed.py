@@ -1,19 +1,26 @@
 # code for seed, acts like a server
 
+import argparse
 from socket import *
 
 encoding = 'utf-8'
+
+parser = argparse.ArgumentParser()
+parser.add_argument('--ip',help='ip address its running on', required=True)
+parser.add_argument('--port', help='port number its running on', required=True)
+
+args = parser.parse_args()
+
+port = int(args.port)
+ip = str(args.ip)
 
 tcp = socket(AF_INET,SOCK_STREAM)
 # listens on a socket even if previously occupied
 tcp.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
 
-port = 6000 # currently hardcoded but ideally read it from config file
-ip = "127.0.0.1"
 tcp.bind((ip,port))
 
 tcp.listen(10)
-
 
 while True:
     #blocks till new connection is achieved
