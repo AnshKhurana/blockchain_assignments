@@ -8,3 +8,13 @@ def findSeeds():
         port = int(seed.split(':')[1].replace('\n',''))
         seed_info.append((ip, port))
     return seed_info
+
+class Connection(object):
+    def __init__(self, socket, ip, port):
+        self.socket = socket
+        self.ip = ip
+        self.port = port
+
+    # Used to share ip, port info to others
+    def pretty(self):
+        return (self.ip, self.port)
