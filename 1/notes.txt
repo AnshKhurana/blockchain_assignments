@@ -2,3 +2,4 @@
 2. main.py is designed to read the seed info from config and run all the seeds(servers) which peers can connect to
 3. Do seed nodes commnicate among themselves? 
 4. If a peer Im connected to dies, should I try to connect to another peer?
+5. All socket operations throw exceptions which need to be handled

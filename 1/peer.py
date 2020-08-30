@@ -10,6 +10,7 @@ from socket import *
 from utils import *
 import random
 import json
+import time
 
 encoding = 'utf-8'
 
@@ -38,6 +39,10 @@ for (ip, port) in seeds:
     # Can receive itself??
     print("Peer list", current_peers)
     peers = peers + current_peers
+    while True:
+        time.sleep(3)
+        s.sendall("hello".encode(encoding))
+
 
 # select a max of 4 distinct peers to connect to
 peers = getUnique(peers)
