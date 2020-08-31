@@ -11,6 +11,9 @@ from utils import *
 import random
 import json
 import time
+import os
+import selectors
+sel = selectors.DefaultSelector()
 
 encoding = 'utf-8'
 
@@ -29,29 +32,49 @@ seed_list = []
 peer_list = []
 peers = []
 
+
+def accept_peer(sock):
+    # Haven't checked this function
+    peer, (peer_ip, peer_port) = sock.accept()
+    print("Received connection from", peer_ip, peer_port)
+    peer.setblocking(False)
+    conn = Connection(peer, peer_ip, peer_port)
+    sel.register(peer, selectors.EVENT_READ | selectors.EVENT_WRITE, data=conn)
+    peer_list.append(conn)
+
+
+def service_connection(key, mask):
+    sock = key.fileobj
+    data = key.data
+    if mask & selectors.EVENT_READ:
+        recv_data = sock.recv(packet_size)  # Should be ready to read
+        if recv_data:
+            if data['type'] == 'seed':
+                current_peers = json.loads(recv_data.decode(encoding))
+                print("Peer list ", current_peers,
+                      "from", data['conn'].pretty())
+
+                # Add to own peer list,
+                # Connect to new peers if not already connected to 4 peers
+    if mask & selectors.EVENT_WRITE:
+        pass
+
+
 # connect to the selected seeds
 for (ip, port) in seeds:
     s = socket()
-    s.connect((ip, port))
-    seed_list.append(Connection(s, ip, port))
-    # Receive the information about its current peers from the seed
-    current_peers = json.loads(s.recv(packet_size).decode(encoding))
-    # Can receive itself??
-    print("Peer list", current_peers)
-    peers = peers + current_peers
-    while True:
-        time.sleep(3)
-        s.sendall("hello".encode(encoding))
-
-
-# select a max of 4 distinct peers to connect to
-peers = getUnique(peers)
-peers = peers[:min(4, len(peers))]
+    s.setblocking(False)
+    e = s.connect_ex((ip, port))
+    print("E", os.strerror(e))
+    conn = Connection(s, ip, port)
+    sel.register(s, selectors.EVENT_READ | selectors.EVENT_WRITE,
+                 data={'type': 'seed', 'conn': conn})
+    seed_list.append(conn)
 
 while True:
-    pass
-# connect to the selected peers
-# for (ip, port) in peers:
-#     s = socket()
-#     s.connect((ip, port))
-#     peer_list.append(Connection(s, ip, port))
+    events = sel.select(timeout=None)
+    for key, mask in events:
+        if key.data is None:
+            accept_peer(key.fileobj)
+        else:
+            service_connection(key, mask)

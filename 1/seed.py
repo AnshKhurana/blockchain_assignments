@@ -40,6 +40,7 @@ def accept_peer(sock):
     # convert str into bytes before sending.
     # Not sure how sendall works with select call. Definite way is to use send repeatedly
     peer.sendall(json.dumps(pretty_peers).encode(encoding))
+    print("Sent peer list")
 
     conn = Connection(peer, peer_ip, peer_port)
     sel.register(peer, selectors.EVENT_READ | selectors.EVENT_WRITE, data=conn)
@@ -50,9 +51,13 @@ def service_connection(key, mask):
     sock = key.fileobj
     data = key.data
     if mask & selectors.EVENT_READ:
-        recv_data = sock.recv(1024)  # Should be ready to read
-        if recv_data:
-            handle_delete(recv_data.decode(encoding))
+        try:  # Find a better place for this
+            recv_data = sock.recv(1024)  # Should be ready to read
+            if recv_data:
+                handle_delete(recv_data.decode(encoding))
+        except Exception as e:
+            print(e)
+
     # if mask & selectors.EVENT_WRITE:
     #     pass
 
@@ -68,7 +73,9 @@ sel.register(server_socket, selectors.EVENT_READ, data=None)
 
 while True:
     events = sel.select(timeout=None)
+    # print("found events")
     for key, mask in events:
+        # print("found key", mask)
         if key.data is None:  # New Peer connection
             accept_peer(key.fileobj)
         else:

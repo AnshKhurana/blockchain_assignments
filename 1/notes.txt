@@ -3,3 +3,6 @@
 3. Do seed nodes commnicate among themselves? 
 4. If a peer Im connected to dies, should I try to connect to another peer?
 5. All socket operations throw exceptions which need to be handled
+6. In peer.py, since we are using select call and non blocking versions of other socket calls, 
+everything, including connecting to seeds happens in the while loop. Thus I'm not sure how we will randomly choose 4 peers
+One solution might be to use select calls but not the blocking versions of the socket calls, this might cause peers to block every once in a while though
