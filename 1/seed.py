@@ -72,6 +72,7 @@ sel.register(server_socket, selectors.EVENT_READ, data=None)
 
 
 while True:
+    
     events = sel.select(timeout=None)
     # print("found events")
     for key, mask in events:
