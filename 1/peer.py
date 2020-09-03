@@ -54,7 +54,7 @@ class Peer:
     def connect_with_seeds(self):
         # connect to the selected seeds
         for (ip, port) in self.seeds:
-            s = socket(socket.AF_INET, socket.SOCK_STREAM)
+            s = socket(AF_INET, SOCK_STREAM)
             s.setblocking(False)
             print("connecting to seed", ip, ":", port)
             s.connect_ex((ip, port))
@@ -67,7 +67,7 @@ class Peer:
             events = self.sel.select(timeout=None)
             for key, mask in events:
                 # debug: data is never None, change below line.
-                if key.data is None:
+                if key.data.type==socket_type.SELF:
                     self.accept_peer(key.fileobj)
                 else:
                     self.service_connection(key, mask)
@@ -84,7 +84,7 @@ class Peer:
         #debug: Firstly confusion due to default arguments below, also incorrect initialization i guess.
         #debug: remove WRITE and check
         self.sel.register(peer, selectors.EVENT_READ | selectors.EVENT_WRITE,
-                    data=Connection(peer, peer_ip, None))
+                    data=Connection(peer, peer_ip, peer_port, socket_type.PEER))
 
     def connect_with_peers(self):
         
@@ -134,14 +134,14 @@ class Peer:
                         self.connect_with_peers()
                 elif data.type == socket_type.PEER:
                     print("received from peer", data.ip, ":", data.port, ":", recv_data)
-                #debug: also add code for socket_type.SELF
+
             except Exception as e:
                 print(e)
                 self.sel.unregister(sock)
                 sock.close()
         
         if mask & selectors.EVENT_WRITE:
-            if not data.sent_id:  # Send listening port info
+            if data.type == socket_type.SEED and not data.sent_id:  # Send listening port info
                 print("sending listening info to", data.ip, ":", data.port)
                 sock.sendall(json.dumps({'port': self.listening_port}).encode(encoding))
                 data.sent_id = True

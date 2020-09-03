@@ -53,4 +53,5 @@ def findSeeds():
 #debug : complete the function
 def getUnique(peers):
     """Remove duplicate from a list of peers."""
-    return [peers[0]]
+    peers = [(peer[0], peer[1]) for peer in peers]
+    return list(set(peers))
