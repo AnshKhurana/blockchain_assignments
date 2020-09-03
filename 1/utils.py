@@ -10,6 +10,33 @@ Classes:
 
 """
 
+from enum import Enum
+
+
+class socket_type(Enum):
+    SELF = 1
+    SEED = 2
+    PEER = 3
+
+
+class Connection(object):
+    """
+    Class to handle socket storage and interaction.
+    When type is PEER, ip and port store the listening socket of the peer
+    """
+
+    def __init__(self, socket, ip=None, port=None, sock_type=socket_type.PEER):
+        """Create Connection along with identity"""
+        self.socket = socket
+        self.ip = ip
+        self.port = port
+        self.type = sock_type
+        self.sent_id = False  # used by peer to check if it needs to send listening port info
+
+    def pretty(self):
+        """Return ip and port info."""
+        return (self.ip, self.port)
+
 
 def findSeeds():
     """Read the config file and return an array of all the seeds info."""
@@ -25,17 +52,4 @@ def findSeeds():
 
 def getUnique(peers):
     """Remove duplicate from a list of peers."""
-    return peers
-
-
-class Connection(object):
-    """Class to handle socket storage and interaction."""
-
-    def __init__(self, socket, ip, port):
-        self.socket = socket
-        self.ip = ip
-        self.port = port
-
-    def pretty(self):
-        """Return ip and port info."""
-        return {'ip': self.ip, 'port': self.port}
+    return [peers[0]]

@@ -1,8 +1,9 @@
 1. 'config.txt' has IP:port of all seeds in separate lines
 2. main.py is designed to read the seed info from config and run all the seeds(servers) which peers can connect to
-3. Do seed nodes commnicate among themselves? 
+3. Do seed nodes commnicate among themselves? Assignment me ek jagah diya hain ki graph must be connected
 4. If a peer Im connected to dies, should I try to connect to another peer?
 5. All socket operations throw exceptions which need to be handled
-6. In peer.py, since we are using select call and non blocking versions of other socket calls, 
-everything, including connecting to seeds happens in the while loop. Thus I'm not sure how we will randomly choose 4 peers
-One solution might be to use select calls but not the blocking versions of the socket calls, this might cause peers to block every once in a while though
+6. See https://docs.python.org/3/library/socket.html#notes-on-socket-timeouts for blocking/non-blocking operations
+7. We might want to use sockey.create_connection and socket.create_server
+8. IMP: Peers first set up a listening socket on some port. Then connect to seeds with a new socket. Then they send addr of the listening socket to be added to peer list
+9. A peer maybe using multiplte sockets to join the network. each interface may have a different ip, then which one is the identity?
