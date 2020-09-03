@@ -42,20 +42,23 @@ class Peer:
         self.listener_socket = socket(AF_INET, SOCK_STREAM)
         # listens on a socket even if previously occupied
         self.listener_socket.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
+        #debug : What is the IP it takes by default??
         self.listener_socket.bind(('', 0))
         self.listener_socket.listen(10)
         self.listener_socket.setblocking(False)
         self.listening_port = self.listener_socket.getsockname()[1]
+        #debug : Below we are registering it with NULL ip address, take care
         self.sel.register(self.listener_socket, selectors.EVENT_READ, data=Connection(
             self.listener_socket, '', self.listening_port, socket_type.SELF))
 
     def connect_with_seeds(self):
         # connect to the selected seeds
         for (ip, port) in self.seeds:
-            s = socket()
+            s = socket(socket.AF_INET, socket.SOCK_STREAM)
             s.setblocking(False)
             print("connecting to seed", ip, ":", port)
             s.connect_ex((ip, port))
+            #debug : No need to do write here with selector below
             self.sel.register(s, selectors.EVENT_READ | selectors.EVENT_WRITE,
                         data=Connection(s, ip, port, sock_type=socket_type.SEED))
 
@@ -63,6 +66,7 @@ class Peer:
         while True:
             events = self.sel.select(timeout=None)
             for key, mask in events:
+                # debug: data is never None, change below line.
                 if key.data is None:
                     self.accept_peer(key.fileobj)
                 else:
@@ -77,6 +81,8 @@ class Peer:
         peer, (peer_ip, peer_port) = sock.accept()
         print("Received connection from", peer_ip, peer_port)
         peer.setblocking(False)
+        #debug: Firstly confusion due to default arguments below, also incorrect initialization i guess.
+        #debug: remove WRITE and check
         self.sel.register(peer, selectors.EVENT_READ | selectors.EVENT_WRITE,
                     data=Connection(peer, peer_ip, None))
 
@@ -90,6 +96,7 @@ class Peer:
             s.setblocking(False)
             print("connecting to peer", ip, ":", port)
             s.connect_ex((ip, port))
+            #debug: selector WRITE remove
             self.sel.register(s, selectors.EVENT_READ | selectors.EVENT_WRITE,
                         data=Connection(s, ip, port, sock_type=socket_type.PEER))
 
@@ -97,6 +104,7 @@ class Peer:
 
         
     def service_connection(self, key, mask):
+        #debug: Do the first kind of message just after connecting, not here.
         """
         Handle all requests.
         Cases:
@@ -126,6 +134,7 @@ class Peer:
                         self.connect_with_peers()
                 elif data.type == socket_type.PEER:
                     print("received from peer", data.ip, ":", data.port, ":", recv_data)
+                #debug: also add code for socket_type.SELF
             except Exception as e:
                 print(e)
                 self.sel.unregister(sock)

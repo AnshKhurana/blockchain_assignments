@@ -21,6 +21,7 @@ parser.add_argument('--port', help='port number its running on', type=int, requi
 
 # peer_list = []
 
+# debug : No need for write event
 selector_mask = selectors.EVENT_READ | selectors.EVENT_WRITE
 
 class Seed:
@@ -66,6 +67,7 @@ class Seed:
         peer.setblocking(False)
         self.sel.register(peer, selector_mask,
                     data=Connection(peer, peer_ip, None))
+        #debug : the mask being set is not None due to the providance of default arguments, change it, but not really a big issue though
 
     # # Might need to ensure you dont send a peer to itself
     # pretty_peers = [connection.pretty() for connection in peer_list]
@@ -99,6 +101,7 @@ class Seed:
                     pretty_peers = [connection.pretty()
                                     for connection in self.peer_list]
                     sock.sendall(json.dumps(pretty_peers).encode(encoding))
+                    # debug: Don't confuse the two connection objectssssss.
                     key.data.port = id['port']
                     self.peer_list.append(key.data)
                 else:  # dead node info

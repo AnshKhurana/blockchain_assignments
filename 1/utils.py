@@ -50,6 +50,7 @@ def findSeeds():
     return seed_info
 
 
+#debug : complete the function
 def getUnique(peers):
     """Remove duplicate from a list of peers."""
     return [peers[0]]
