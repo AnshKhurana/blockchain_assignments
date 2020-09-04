@@ -141,6 +141,16 @@ class Peer:
                 sock.sendall(json.dumps({'port': self.listening_port}).encode(encoding))
                 data.sent_id = True
 
+    def parse_peer_message(self, sock, data, message):
+
+        print("received from peer", data.ip, ":", data.port, ":", message)
+        if message.startswith("Liveness Request"):
+            # need to respond with a liveness reply
+            [_, sender_timestamp, sender_ip] = message.split('_')
+            reply = "Liveness Reply_{}_{}_{}".format(sender_timestamp, sender_ip, self.ip)
+            print("sending liveness reply to", data.ip, ":", data.port)
+            sock.sendall(reply.encode(encoding))
+
 
     def service_peer(self, key, mask):
         """
@@ -160,7 +170,7 @@ class Peer:
                     self.sel.unregister(sock)
                     sock.close()
                 else:
-                    print("received from peer", data.ip, ":", data.port, ":", recv_data)
+                    self.parse_peer_message(sock, data, recv_data.decode(encoding))
 
             except Exception as e:
                 print(e)
@@ -170,7 +180,7 @@ class Peer:
         if mask & selectors.EVENT_WRITE:
             # check the time since the last liveness check
             if data.liveness_timestamp is None or current_time-data.liveness_timestamp>datetime.timedelta(seconds = LIVENESS_DELAY):
-                message = "Liveness Request:{}:{}".format(current_time, self.ip)
+                message = "Liveness Request_{}_{}".format(current_time, self.ip)
                 print("sending liveness request to", data.ip, ":", data.port)
                 sock.sendall(message.encode(encoding))
                 data.liveness_timestamp = current_time
