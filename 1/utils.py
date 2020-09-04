@@ -13,6 +13,8 @@ Classes:
 from enum import Enum
 import datetime
 
+MAX_TRIES = 3 # maximum 3 timeouts for liveness testing
+
 class socket_type(Enum):
     SELF = 1
     SEED = 2
@@ -34,6 +36,8 @@ class Connection(object):
         self.sent_id = False  # used by peer and seed both to check if it needs to send listening port info
         self.listener_port = None # used by seed to keep track of port at which peer is listening
         self.liveness_timestamp = None #timestamp of the last liveness message sent on this socket
+        self.tries_left = MAX_TRIES
+        self.sent_messages = []
 
     def pretty(self):
         """Return ip and port info."""

@@ -152,11 +152,7 @@ class Peer:
 
         print("received from peer", data.ip, ":", data.port, ":", message)
         if message.startswith("Liveness Request"):
-            # need to respond with a liveness reply
-            [_, sender_timestamp, sender_ip] = message.split('_')
-            reply = "Liveness Reply_{}_{}_{}".format(sender_timestamp, sender_ip, self.ip)
-            print("sending liveness reply to", data.ip, ":", data.port)
-            sock.sendall(reply.encode(encoding))
+            pass
         elif message.startswith("Liveness Reply"):
             # must update that the peer is active
             data.tries_left = MAX_TRIES
@@ -183,11 +179,11 @@ class Peer:
             try:
                 recv_data = sock.recv(PACKET_SIZE)  # Should be ready to read
                 if not recv_data:
-                    # print("should close connection to", data.ip, ":", data.port, "in 3 tries")
+                    print("should close connection to", data.ip, ":", data.port, "in 3 tries")
                     # Currently commented out just to check the correctness of dead node reporting
-                    print("closing connection to", data.ip, ":", data.port)
-                    self.sel.unregister(sock)
-                    sock.close()
+                    # print("closing connection to", data.ip, ":", data.port)
+                    # self.sel.unregister(sock)
+                    # sock.close()
                 else:
                     self.parse_peer_message(sock, data, recv_data.decode(encoding))
 

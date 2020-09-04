@@ -50,8 +50,8 @@ class Seed:
                     self.service_peer(key, mask)
         listener_socket.close()
 
-    def parse_message(self, message):
-        pass
+    def parse_message(self, sock, data, message):
+        print("received from", data.ip, ":", data.port, ":", message)
 
     def accept_peer(self, sock):
         """
@@ -96,8 +96,7 @@ class Seed:
                     self.peer_list.append(key.data)
                 
                 else:  # dead node info
-                    print("received from", data.ip, ":", data.port, ":", recv_data)
-                    parse_message(recv_data)
+                    self.parse_message(sock, data, recv_data)
             
             except Exception as e:
                 print(e)
