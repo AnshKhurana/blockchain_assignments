@@ -11,7 +11,7 @@ Classes:
 """
 
 from enum import Enum
-
+import datetime
 
 class socket_type(Enum):
     SELF = 1
@@ -33,6 +33,7 @@ class Connection(object):
         self.type = sock_type
         self.sent_id = False  # used by peer and seed both to check if it needs to send listening port info
         self.listener_port = None # used by seed to keep track of port at which peer is listening
+        self.liveness_timestamp = None #timestamp of the last liveness message sent on this socket
 
     def pretty(self):
         """Return ip and port info."""

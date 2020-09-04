@@ -13,14 +13,14 @@ import json
 import time
 import os
 import selectors
+import datetime
 
 encoding = 'utf-8'
 
 # GLOBAL VARIABLES
 PACKET_SIZE = 1024
-NUM_MESSAGES = 10
-MESSAGE_TIME = 5
 MAX_CONNECTED_PEERS = 4
+LIVENESS_DELAY = 13 # 13 seconds for each message
 
 read_mask = selectors.EVENT_READ
 read_write_mask = selectors.EVENT_READ | selectors.EVENT_WRITE
@@ -46,6 +46,7 @@ class Peer:
         self.listener_socket.listen(10)
         self.listener_socket.setblocking(False)
         self.listening_port = self.listener_socket.getsockname()[1]
+        self.ip = self.listener_socket.getsockname()[0]
         
         self.sel.register(self.listener_socket, read_mask, data=Connection(
             self.listener_socket, '', self.listening_port, socket_type.SELF))
@@ -150,6 +151,7 @@ class Peer:
         """
         sock = key.fileobj
         data = key.data
+        current_time = datetime.datetime.now(tz=None)
         if mask & selectors.EVENT_READ:
             try:
                 recv_data = sock.recv(PACKET_SIZE)  # Should be ready to read
@@ -166,7 +168,13 @@ class Peer:
                 sock.close()
         
         if mask & selectors.EVENT_WRITE:
-            pass
+            # check the time since the last liveness check
+            if data.liveness_timestamp is None or current_time-data.liveness_timestamp>datetime.timedelta(seconds = LIVENESS_DELAY):
+                message = "Liveness Request:{}:{}".format(current_time, self.ip)
+                print("sending liveness request to", data.ip, ":", data.port)
+                sock.sendall(message.encode(encoding))
+                data.liveness_timestamp = current_time
+                
 
 if __name__ == "__main__":
     
