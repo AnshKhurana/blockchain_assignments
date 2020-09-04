@@ -28,6 +28,7 @@ class Seed:
         self.port = port
         self.peer_list = []
         self.sel = selectors.DefaultSelector()
+        self.dead_peers = []
         
     def run(self):
         # set-up listening socket for selector
@@ -52,6 +53,16 @@ class Seed:
 
     def parse_message(self, sock, data, message):
         print("received from", data.ip, ":", data.port, ":", message)
+        if message.startswith("Dead Node"):
+            # remove from peer_list and add to dead_peers list so that connection can be broken later
+            [_, dead_ip, dead_port, _, _] = message.split('_')
+            dead_port = int(dead_port)
+            self.dead_peers.append((dead_ip, dead_port))
+            self.peer_list = list(filter(lambda conn: conn.ip!=dead_ip or conn.listener_port!=dead_port, self.peer_list))
+            pretty_peers = [connection.pretty()
+                                    for connection in self.peer_list]
+            print(pretty_peers)
+            print(self.dead_peers)
 
     def accept_peer(self, sock):
         """
@@ -104,7 +115,12 @@ class Seed:
                 sock.close()
 
         if mask & selectors.EVENT_WRITE:
-            pass
+            # check if the peer is dead, if yes break connection
+            for (dead_ip, dead_port) in self.dead_peers:
+                if(data.ip == dead_ip and data.listener_port == dead_port):
+                    print("closing connection to", data.ip, ":", data.port)
+                    self.sel.unregister(sock)
+                    sock.close()
         
 if __name__ == "__main__":
     args = parser.parse_args()

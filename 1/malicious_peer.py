@@ -181,9 +181,9 @@ class Peer:
                 if not recv_data:
                     print("should close connection to", data.ip, ":", data.port, "in 3 tries")
                     # Currently commented out just to check the correctness of dead node reporting
-                    # print("closing connection to", data.ip, ":", data.port)
-                    # self.sel.unregister(sock)
-                    # sock.close()
+                    print("closing connection to", data.ip, ":", data.port)
+                    self.sel.unregister(sock)
+                    sock.close()
                 else:
                     self.parse_peer_message(sock, data, recv_data.decode(encoding))
 
