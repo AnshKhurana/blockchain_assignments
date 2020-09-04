@@ -25,17 +25,18 @@ class Connection(object):
     When type is PEER, ip and port store the listening socket of the peer
     """
 
-    def __init__(self, socket, ip=None, port=None, sock_type=socket_type.PEER):
+    def __init__(self, socket, ip, port, sock_type):
         """Create Connection along with identity"""
         self.socket = socket
         self.ip = ip
         self.port = port
         self.type = sock_type
-        self.sent_id = False  # used by peer to check if it needs to send listening port info
+        self.sent_id = False  # used by peer and seed both to check if it needs to send listening port info
+        self.listener_port = None # used by seed to keep track of port at which peer is listening
 
     def pretty(self):
         """Return ip and port info."""
-        return (self.ip, self.port)
+        return (self.ip, self.listener_port)
 
 
 def findSeeds():
@@ -49,8 +50,6 @@ def findSeeds():
         seed_info.append((ip, port))
     return seed_info
 
-
-#debug : complete the function
 def getUnique(peers):
     """Remove duplicate from a list of peers."""
     peers = [(peer[0], peer[1]) for peer in peers]
