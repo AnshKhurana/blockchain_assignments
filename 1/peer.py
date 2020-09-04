@@ -20,6 +20,7 @@ encoding = 'utf-8'
 PACKET_SIZE = 1024
 NUM_MESSAGES = 10
 MESSAGE_TIME = 5
+MAX_CONNECTED_PEERS = 4
 
 read_mask = selectors.EVENT_READ
 read_write_mask = selectors.EVENT_READ | selectors.EVENT_WRITE
@@ -87,7 +88,11 @@ class Peer:
         if len(self.received_peer_list) == 0:
             print("No other peers in the network")
 
-        for (ip, port) in getUnique(self.received_peer_list):
+        peer_list = getUnique(self.received_peer_list)
+        random.shuffle(peer_list)
+        peer_list = peer_list[:min(len(peer_list), MAX_CONNECTED_PEERS)]
+
+        for (ip, port) in peer_list:
             s = socket()
             s.setblocking(False)
             print("connecting to peer", ip, ":", port)
