@@ -36,6 +36,7 @@ class Seed:
         # listens on a socket even if previously occupied
         listener_socket.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
         listener_socket.bind((self.ip, self.port))
+        # Why 10?
         listener_socket.listen(10)
         listener_socket.setblocking(False)
         self.sel.register(listener_socket, read_mask, data=Connection(

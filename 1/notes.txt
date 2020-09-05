@@ -7,3 +7,4 @@
 7. We might want to use sockey.create_connection and socket.create_server
 8. IMP: Peers first set up a listening socket on some port. Then connect to seeds with a new socket. Then they send addr of the listening socket to be added to peer list
 9. A peer maybe using multiplte sockets to join the network. each interface may have a different ip, then which one is the identity?
+10. listener_socket.listen(10) -> why 10? (socket.listen(backlog) Listen for connections made to the socket. The backlog argument specifies the maximum number of queued connections and should be at least 1; the maximum value is system-dependent (usually 5).)
