@@ -123,7 +123,9 @@ class Peer:
             print("connecting to peer", ip, ":", port)
             s.connect_ex((ip, port))
             self.sel.register(s, read_write_mask,
-                        data=Connection(s, ip, port, sock_type=socket_type.PEER))
+                        data=Connection(s, ip, port, sock_type=socket_type.PEER, listener_port=port))
+            port_message = "Listener Port:{}~".format(self.listening_port)
+            s.sendall(port_message.encode(encoding))
 
         print("sent connection request to all")
         print("Number of out neighbours: ", len(self.peer_list))
@@ -191,6 +193,10 @@ class Peer:
                 # must update that the peer is active
                 print("received a liveness reply from", data.ip, ":", data.port, ":", message)
                 data.tries_left = MAX_TRIES
+            elif message.startswith("Listener Port"):
+                print("received information about listening port from", data.ip, ":", data.port, ":", message)
+                [_, port] = message.split(':')
+                data.listener_port = int(port)
             else:
                 if message=='':
                     continue
@@ -212,7 +218,7 @@ class Peer:
 
     def handle_dead_peer(self, sock, data):
         current_time = datetime.datetime.now(tz=None)
-        message = "Dead Node:{}:{}:{}:{}".format(data.ip, data.port, current_time, self.ip)
+        message = "Dead Node:{}:{}:{}:{}".format(data.ip, data.listener_port, current_time, self.ip)
         self.seed_broadcast_queue.append(message)
         print("closing connection to", data.ip, ":", data.port)
         self.sel.unregister(sock)

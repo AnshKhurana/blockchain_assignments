@@ -27,14 +27,14 @@ class Connection(object):
     When type is PEER, ip and port store the listening socket of the peer
     """
 
-    def __init__(self, socket, ip, port, sock_type):
+    def __init__(self, socket, ip, port, sock_type, listener_port = None):
         """Create Connection along with identity"""
         self.socket = socket
         self.ip = ip
         self.port = port
         self.type = sock_type
         self.sent_id = False  # used by peer and seed both to check if it needs to send listening port info
-        self.listener_port = None # used by seed to keep track of port at which peer is listening
+        self.listener_port = listener_port # used by seed to keep track of port at which peer is listening
         self.liveness_timestamp = None #timestamp of the last liveness message sent on this socket
         # self.gossip_timestamp = None
         self.tries_left = MAX_TRIES
