@@ -56,7 +56,7 @@ class Seed:
         print("received from", data.ip, ":", data.port, ":", message)
         if message.startswith("Dead Node"):
             # remove from peer_list and add to dead_peers list so that connection can be broken later
-            [_, dead_ip, dead_port, _, _] = message.split('_')
+            [_, dead_ip, dead_port, _, _, _, _] = message.split(':')
             dead_port = int(dead_port)
             self.dead_peers.append((dead_ip, dead_port))
             self.peer_list = list(filter(lambda conn: conn.ip!=dead_ip or conn.listener_port!=dead_port, self.peer_list))

@@ -79,7 +79,7 @@ class Peer:
             current_time = datetime.datetime.now(tz=None)
             if self.gossip_sent < GOSSIP_SEND_LIMIT and self.start_making:
                 if self.gossip_timestamp is None or (current_time-self.gossip_timestamp)>datetime.timedelta(seconds = GOSSIP_DELAY):
-                    message = "{}_{}_{}~".format(current_time, self.ip, self.gossip_sent)
+                    message = "{}:{}:{}~".format(current_time, self.ip, self.gossip_sent)
                     # None, None -> no constraint when sending your own
                     self.peer_broadcast_queue.append((message, None, None))
                     self.gossip_sent+=1
@@ -182,8 +182,9 @@ class Peer:
             if message.startswith("Liveness Request"):
                 print("received a liveness request from", data.ip, ":", data.port, ":", message)
                 # need to respond with a liveness reply
-                [_, sender_timestamp, sender_ip] = message.split('_')
-                reply = "Liveness Reply_{}_{}_{}".format(sender_timestamp, sender_ip, self.ip)
+                [_, sender_date, sender_min, sender_sec, sender_ip] = message.split(':')
+                sender_timestamp = ':'.join([sender_date, sender_min, sender_sec])
+                reply = "Liveness Reply:{}:{}:{}".format(sender_timestamp, sender_ip, self.ip)
                 print("sending liveness reply to", data.ip, ":", data.port)
                 sock.sendall(reply.encode(encoding))
             elif message.startswith("Liveness Reply"):
@@ -211,7 +212,7 @@ class Peer:
 
     def handle_dead_peer(self, sock, data):
         current_time = datetime.datetime.now(tz=None)
-        message = "Dead Node_{}_{}_{}_{}".format(data.ip, data.port, current_time, self.ip)
+        message = "Dead Node:{}:{}:{}:{}".format(data.ip, data.port, current_time, self.ip)
         self.seed_broadcast_queue.append(message)
         print("closing connection to", data.ip, ":", data.port)
         self.sel.unregister(sock)
@@ -253,7 +254,7 @@ class Peer:
                 if data.tries_left <= 0:
                     self.handle_dead_peer(sock, data)
                 else:
-                    message = "Liveness Request_{}_{}~".format(current_time, self.ip)
+                    message = "Liveness Request:{}:{}~".format(current_time, self.ip)
                     print("sending liveness request to", data.ip, ":", data.port)
                     sock.sendall(message.encode(encoding))
                     data.liveness_timestamp = current_time
