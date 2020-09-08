@@ -87,8 +87,8 @@ class Seed:
                     lambda conn: conn.ip != dead_ip or conn.listener_port != dead_port, self.peer_list))
                 pretty_peers = [connection.pretty()
                                 for connection in self.peer_list]
-                self.printer.print(pretty_peers, DEBUG_MODE)
-                self.printer.print(self.dead_peers, DEBUG_MODE)
+                self.printer.print(str(pretty_peers), DEBUG_MODE)
+                self.printer.print(str(self.dead_peers), DEBUG_MODE)
             else:
                 self.printer.print(f"Invalid message: {message}")
 

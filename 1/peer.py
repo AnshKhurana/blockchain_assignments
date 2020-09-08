@@ -39,7 +39,6 @@ class Peer:
         self.received_peer_list = []
         self.received_from = 0
         self.peer_list = []
-        self.closed_sockets = []
         self.sel = selectors.DefaultSelector()
 
         self.listener_socket = socket(AF_INET, SOCK_STREAM)
@@ -91,31 +90,6 @@ class Peer:
                     self.printer.print(
                         f"Generated my own gossip message: {self.gossip_sent}")
 
-            # Try to reconnect to closed sockets
-            for data in self.closed_sockets:
-                # check the time since the last liveness check
-                if data.liveness_timestamp is None or current_time-data.liveness_timestamp > datetime.timedelta(seconds=LIVENESS_DELAY):
-                    if data.tries_left <= 0:
-                        self.handle_dead_peer(data.socket, data)
-                        self.closed_sockets.remove(data)
-                    else:
-                        try:
-                            data.socket = socket()
-                            data.socket.setblocking(False)
-                            self.printer.print(
-                                f"Trying to reconnect to peer {data.ip}:{data.port}", DEBUG_MODE)
-                            data.socket.connect_ex((data.ip, data.port))
-                            message = liveness_request_msg.format(
-                                current_time, self.ip)
-                            self.printer.print(
-                                f"Sending liveness request to {data.ip}:{data.port}", DEBUG_MODE)
-                            data.socket.sendall(message.encode(encoding))
-                        except:
-                            self.printer.print(
-                                f"failed to send liveness request to {data.ip}:{data.port}", DEBUG_MODE)
-                        data.liveness_timestamp = current_time
-                        data.tries_left -= 1
-
             events = self.sel.select(timeout=None)
 
             for key, mask in events:
@@ -161,8 +135,6 @@ class Peer:
             except:
                 self.printer.print(
                     f"Failed to connect to {ip}:{port}", DEBUG_MODE)
-                self.closed_sockets.append(Connection(
-                    s, ip, port, sock_type=socket_type.PEER, listener_port=port))
             else:
                 self.sel.register(s, read_write_mask,
                                   data=Connection(s, ip, port, sock_type=socket_type.PEER, listener_port=port))
@@ -215,7 +187,7 @@ class Peer:
                         sock.sendall((message).encode(encoding))
                         data.sent_messages.append(message)
         except Exception as e:
-            print(e)
+            print(str(e))
             self.printer.print(
                 f"closing connection to Seed {data.ip}:{data.port}", DEBUG_MODE)
             self.sel.unregister(sock)
@@ -227,23 +199,19 @@ class Peer:
 
         for message in messages:
             if message.startswith("Liveness Request"):
-                if data in self.closed_sockets:
-                    self.closed_sockets.remove(data)
                 self.printer.print(
                     f"Received a liveness request from {data.ip}:{data.port}:{message}", DEBUG_MODE)
                 # need to respond with a liveness reply
                 [_, sender_date, sender_min, sender_sec,
-                    sender_ip] = message.split(':')
+                    sender_ip, sender_port] = message.split(':')
                 sender_timestamp = ':'.join(
                     [sender_date, sender_min, sender_sec])
                 reply = liveness_reply_msg.format(
-                    sender_timestamp, sender_ip, self.ip)
+                    sender_timestamp, sender_ip, sender_port, self.ip, self.listening_port)
                 self.printer.print(
-                    f"Sending liveness reply to {data.ip}:{data.port}", DEBUG_MODE)
+                    f"Sending liveness reply to {data.ip}:{data.listener_port}", DEBUG_MODE)
                 sock.sendall(reply.encode(encoding))
             elif message.startswith("Liveness Reply"):
-                if data in self.closed_sockets:
-                    self.closed_sockets.remove(data)
                 # must update that the peer is active
                 self.printer.print(
                     f"Received a liveness reply from {data.ip}:{data.port} {message}", DEBUG_MODE)
@@ -304,8 +272,9 @@ class Peer:
                     self.printer.print(
                         f"Closing connection to peer {data.ip}:{data.port}", DEBUG_MODE)
                     self.sel.unregister(sock)
-                    self.closed_sockets.append(data)
                     sock.close()
+                    if data.listener_port:
+                        self.handle_dead_peer(sock, data)
                 else:
                     self.parse_peer_message(
                         sock, data, recv_data.decode(encoding))
@@ -317,7 +286,7 @@ class Peer:
                         self.handle_dead_peer(sock, data)
                     else:
                         message = liveness_request_msg.format(
-                            current_time, self.ip)
+                            current_time, self.ip, self.listening_port)
                         self.printer.print(
                             f"Sending liveness request to {data.ip}:{data.port}", DEBUG_MODE)
                         try:
@@ -340,12 +309,13 @@ class Peer:
                                 sock.sendall(message.encode(encoding))
                                 data.hashed_sent.append(message_hash)
         except Exception as e:
-            print(e)
+            print(str(e))
             self.printer.print(
                 f"Closing connection to peer {data.ip}:{data.port}", DEBUG_MODE)
             self.sel.unregister(sock)
-            self.closed_sockets.append(data)
             sock.close()
+            if data.listener_port:
+                self.handle_dead_peer(sock, data)
 
 
 if __name__ == "__main__":
