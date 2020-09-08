@@ -18,9 +18,9 @@ import os
 MAX_TRIES = 3  # maximum 3 timeouts for liveness testing
 read_mask = selectors.EVENT_READ
 read_write_mask = selectors.EVENT_READ | selectors.EVENT_WRITE
-DEBUG_MODE = True  # Change to false for submission
+DEBUG_MODE = False  # Change to false for submission
 
-dead_node_msg = "Dead Node:{}:{}:{}:{}:{}~"
+dead_node_msg = "Dead Node:{}:{}:{}:{}~"
 listening_port_msg = "Listening Port:{}~"
 liveness_request_msg = "Liveness Request:{}:{}~"
 liveness_reply_msg = "Liveness Reply:{}:{}:{}~"
@@ -72,6 +72,7 @@ class Connection(object):
         self.tries_left = MAX_TRIES
         self.sent_messages = []
         self.hashed_sent = []
+        self.created_at = datetime.datetime.now(tz=None)
 
     def pretty(self):
         """Return ip and port info."""

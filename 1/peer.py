@@ -39,6 +39,7 @@ class Peer:
         self.received_peer_list = []
         self.received_from = 0
         self.peer_list = []
+        self.closed_sockets = []
         self.sel = selectors.DefaultSelector()
 
         self.listener_socket = socket(AF_INET, SOCK_STREAM)
@@ -87,8 +88,33 @@ class Peer:
                     self.gossip_sent += 1
                     self.gossip_timestamp = current_time
                     # Does this need to be printed?
-                    print(
+                    self.printer.print(
                         f"Generated my own gossip message: {self.gossip_sent}")
+
+            # Try to reconnect to closed sockets
+            for data in self.closed_sockets:
+                # check the time since the last liveness check
+                if data.liveness_timestamp is None or current_time-data.liveness_timestamp > datetime.timedelta(seconds=LIVENESS_DELAY):
+                    if data.tries_left <= 0:
+                        self.handle_dead_peer(data.socket, data)
+                        self.closed_sockets.remove(data)
+                    else:
+                        try:
+                            data.socket = socket()
+                            data.socket.setblocking(False)
+                            self.printer.print(
+                                f"Trying to reconnect to peer {data.ip}:{data.port}")
+                            data.socket.connect_ex((data.ip, data.port))
+                            message = liveness_request_msg.format(
+                                current_time, self.ip)
+                            self.printer.print(
+                                f"Sending liveness request to {data.ip}:{data.port}", DEBUG_MODE)
+                            data.socket.sendall(message.encode(encoding))
+                        except:
+                            self.printer.print(
+                                f"failed to send liveness request to {data.ip}:{data.port}", DEBUG_MODE)
+                        data.liveness_timestamp = current_time
+                        data.tries_left -= 1
 
             events = self.sel.select(timeout=None)
 
@@ -118,18 +144,28 @@ class Peer:
             self.printer.print("No other peers in the network", DEBUG_MODE)
 
         peer_list = getUnique(self.received_peer_list)
+        self.printer.print(f"Received Peer List is {peer_list}")
         random.shuffle(peer_list)
         self.peer_list = peer_list[:min(len(peer_list), MAX_CONNECTED_PEERS)]
 
         for (ip, port) in self.peer_list:
-            s = socket()
-            s.setblocking(False)
-            self.printer.print(f"connecting to peer {ip}:{port}", DEBUG_MODE)
-            s.connect_ex((ip, port))
-            self.sel.register(s, read_write_mask,
-                              data=Connection(s, ip, port, sock_type=socket_type.PEER, listener_port=port))
-            port_message = listening_port_msg.format(self.listening_port)
-            s.sendall(port_message.encode(encoding))
+            try:
+                s = socket()
+                s.setblocking(False)
+                self.printer.print(
+                    f"connecting to peer {ip}:{port}", DEBUG_MODE)
+                s.connect_ex((ip, port))
+
+                port_message = listening_port_msg.format(self.listening_port)
+                s.sendall(port_message.encode(encoding))
+            except:
+                self.printer.print(
+                    f"Failed to connect to {ip}:{port}", DEBUG_MODE)
+                self.closed_sockets.append(Connection(
+                    s, ip, port, sock_type=socket_type.PEER, listener_port=port))
+            else:
+                self.sel.register(s, read_write_mask,
+                                  data=Connection(s, ip, port, sock_type=socket_type.PEER, listener_port=port))
 
         self.printer.print("sent connection request to all", DEBUG_MODE)
         self.printer.print(
@@ -146,12 +182,12 @@ class Peer:
         """
         sock = key.fileobj
         data = key.data
-        if mask & selectors.EVENT_READ:
-            try:
+        try:
+            if mask & selectors.EVENT_READ:
                 recv_data = sock.recv(PACKET_SIZE)
                 if not recv_data:
                     self.printer.print(
-                        f"closing connection to {data.ip}:{data.port}", DEBUG_MODE)
+                        f"closing connection to Seed {data.ip}:{data.port}", DEBUG_MODE)
                     self.sel.unregister(sock)
                     sock.close()
                 else:
@@ -164,24 +200,26 @@ class Peer:
                         self.printer.print("Connecting to peers", DEBUG_MODE)
                         self.connect_with_peers()
 
-            except Exception as e:
-                print(e)
-                self.sel.unregister(sock)
-                sock.close()
-
-        if mask & selectors.EVENT_WRITE:
-            if not data.sent_id:  # Send listening port info
-                self.printer.print(
-                    f"Sending listening info to {data.ip}:{data.port}", DEBUG_MODE)
-                port_message = listening_port_msg.format(self.listening_port)
-                sock.sendall(port_message.encode(encoding))
-                data.sent_id = True
-            for message in self.seed_broadcast_queue:
-                if message not in data.sent_messages:
+            if mask & selectors.EVENT_WRITE:
+                if not data.sent_id:  # Send listening port info
                     self.printer.print(
-                        f"Sending dead node message to {data.ip}:{data.port} {message}", DEBUG_MODE)
-                    sock.sendall((message).encode(encoding))
-                    data.sent_messages.append(message)
+                        f"Sending listening info to {data.ip}:{data.port}", DEBUG_MODE)
+                    port_message = listening_port_msg.format(
+                        self.listening_port)
+                    sock.sendall(port_message.encode(encoding))
+                    data.sent_id = True
+                for message in self.seed_broadcast_queue:
+                    if message not in data.sent_messages:
+                        self.printer.print(
+                            f"Sending dead node message to {data.ip}:{data.port} {message}", DEBUG_MODE)
+                        sock.sendall((message).encode(encoding))
+                        data.sent_messages.append(message)
+        except Exception as e:
+            print(e)
+            self.printer.print(
+                f"closing connection to Seed {data.ip}:{data.port}", DEBUG_MODE)
+            self.sel.unregister(sock)
+            sock.close()
 
     def parse_peer_message(self, sock, data, message_combined):
 
@@ -189,6 +227,8 @@ class Peer:
 
         for message in messages:
             if message.startswith("Liveness Request"):
+                if data in self.closed_sockets:
+                    self.closed_sockets.remove(data)
                 self.printer.print(
                     f"Received a liveness request from {data.ip}:{data.port}:{message}", DEBUG_MODE)
                 # need to respond with a liveness reply
@@ -202,11 +242,13 @@ class Peer:
                     f"Sending liveness reply to {data.ip}:{data.port}", DEBUG_MODE)
                 sock.sendall(reply.encode(encoding))
             elif message.startswith("Liveness Reply"):
+                if data in self.closed_sockets:
+                    self.closed_sockets.remove(data)
                 # must update that the peer is active
                 self.printer.print(
                     f"Received a liveness reply from {data.ip}:{data.port} {message}", DEBUG_MODE)
                 data.tries_left = MAX_TRIES
-            elif message.startswith("Listener Port"):
+            elif message.startswith("Listening Port"):
                 self.printer.print(
                     f"Received information about listening port from {data.ip}:{data.port} {message}", DEBUG_MODE)
                 [_, port] = message.split(':')
@@ -214,17 +256,14 @@ class Peer:
             elif message == '':
                 continue
             else:
-                self.printer.print(
-                    f"Received a gossip message from {data.ip}:{data.port} {message}", DEBUG_MODE)
-                # append to self.message_list
                 message_hash = sha256(message.encode(encoding)).hexdigest()
 
                 if message_hash in self.message_list.keys():
                     self.printer.print(
-                        "Ignore this, already received.", DEBUG_MODE)
+                        f"Received stale msg {message} from {data.ip}:{data.port}.", DEBUG_MODE)
                 else:
                     self.printer.print(
-                        f"Received new gossip message {message} from {data.ip}:{data.port}")
+                        f"Received new gossip message {message} from {data.ip}:{data.port} at {datetime.datetime.now(tz=None)}")
                     self.message_list[message_hash] = True
                     # message with sender info
                     self.peer_broadcast_queue.append(
@@ -239,8 +278,11 @@ class Peer:
         self.seed_broadcast_queue.append(message)
         self.printer.print(
             f"Closing connection to {data.ip}:{data.port}", DEBUG_MODE)
-        self.sel.unregister(sock)
-        sock.close()
+        try:
+            self.sel.unregister(sock)
+            sock.close()
+        except:
+            pass
 
     def service_peer(self, key, mask):
         """
@@ -254,49 +296,57 @@ class Peer:
         current_time = datetime.datetime.now(tz=None)
         # peer_count = 0
         # if len(self.peer_broadcast_queue) !=0):
-
-        if mask & selectors.EVENT_READ:
-            try:
+        try:
+            if mask & selectors.EVENT_READ:
                 recv_data = sock.recv(PACKET_SIZE)  # Should be ready to read
                 if not recv_data:
                     # print("should close connection to", data.ip, ":", data.port, "in 3 tries")
                     # Currently commented out just to check the correctness of dead node reporting
                     self.printer.print(
-                        f"Closing connection to {data.ip}:{data.port}", DEBUG_MODE)
+                        f"Closing connection to peer {data.ip}:{data.port}", DEBUG_MODE)
                     self.sel.unregister(sock)
+                    self.closed_sockets.append(data)
                     sock.close()
                 else:
                     self.parse_peer_message(
                         sock, data, recv_data.decode(encoding))
 
-            except Exception as e:
-                print(e)
-                self.sel.unregister(sock)
-                sock.close()
-
-        if mask & selectors.EVENT_WRITE:
-            # check the time since the last liveness check
-            if data.liveness_timestamp is None or current_time-data.liveness_timestamp > datetime.timedelta(seconds=LIVENESS_DELAY):
-                if data.tries_left <= 0:
-                    self.handle_dead_peer(sock, data)
-                else:
-                    message = liveness_request_msg.format(
-                        current_time, self.ip)
-                    self.printer.print(
-                        f"Sending liveness request to {data.ip}:{data.port}", DEBUG_MODE)
-                    sock.sendall(message.encode(encoding))
-                    data.liveness_timestamp = current_time
-                    data.tries_left -= 1
-
-            # print("gossip timestamp: ", self.gossip_timestamp)
-            for message, send_not_ip, send_not_port in self.peer_broadcast_queue:
-                message_hash = sha256(message.encode(encoding)).hexdigest()
-                if not (message_hash in data.hashed_sent):
-                    if not (send_not_ip == data.ip and send_not_port == data.port):
+            if mask & selectors.EVENT_WRITE:
+                # check the time since the last liveness check
+                if data.liveness_timestamp is None or current_time-data.liveness_timestamp > datetime.timedelta(seconds=LIVENESS_DELAY):
+                    if data.tries_left <= 0:
+                        self.handle_dead_peer(sock, data)
+                    else:
+                        message = liveness_request_msg.format(
+                            current_time, self.ip)
                         self.printer.print(
-                            f"Sending gossip message to {data.ip}:{data.port}", DEBUG_MODE)
-                        sock.sendall(message.encode(encoding))
-                        data.hashed_sent.append(message_hash)
+                            f"Sending liveness request to {data.ip}:{data.port}", DEBUG_MODE)
+                        try:
+                            sock.sendall(message.encode(encoding))
+                        except:
+                            self.printer.print(
+                                f"failed to send liveness request to {data.ip}:{data.port}", DEBUG_MODE)
+                        data.liveness_timestamp = current_time
+                        data.tries_left -= 1
+
+                for message, send_not_ip, send_not_port in self.peer_broadcast_queue:
+                    message_hash = sha256(message.encode(encoding)).hexdigest()
+                    if not (message_hash in data.hashed_sent):
+                        if not (send_not_ip == data.ip and send_not_port == data.port):
+                            time_of_msg = datetime.datetime.strptime(
+                                message[:message[:message.rfind(":")].rfind(":")], '%Y-%m-%d %H:%M:%S.%f')
+                            if data.created_at < time_of_msg:
+                                self.printer.print(
+                                    f"Sending gossip message to {data.ip}:{data.port}", DEBUG_MODE)
+                                sock.sendall(message.encode(encoding))
+                                data.hashed_sent.append(message_hash)
+        except Exception as e:
+            print(e)
+            self.printer.print(
+                f"Closing connection to peer {data.ip}:{data.port}", DEBUG_MODE)
+            self.sel.unregister(sock)
+            self.closed_sockets.append(data)
+            sock.close()
 
 
 if __name__ == "__main__":

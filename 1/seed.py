@@ -56,6 +56,12 @@ class Seed:
         listener_socket.close()
 
     def parse_message(self, sock, data, message_combined):
+        """
+        Handle all sent messages
+        Cases:
+            - A peer has sent listening port. Send current peer list and add peer to peer list
+            - A peer has sent dead node info. Remove peer from peer list
+        """
         messages = message_combined.split('~')
 
         for message in messages:
@@ -64,7 +70,7 @@ class Seed:
             # peer has sent listening port
             elif data.listener_port is None and message.startswith("Listening Port"):
                 self.printer.print(
-                    f"recived listening port info {message}", DEBUG_MODE)
+                    f"Received listening port info {message}", DEBUG_MODE)
                 pretty_peers = [connection.pretty()
                                 for connection in self.peer_list]
                 sock.sendall(json.dumps(pretty_peers).encode(encoding))
@@ -75,15 +81,16 @@ class Seed:
                 # remove from peer_list and add to dead_peers list so that connection can be broken later
                 [_, dead_ip, dead_port, _, _, _, _] = message.split(':')
                 dead_port = int(dead_port)
+                self.printer.print(f"Received dead node msg {message}")
                 self.dead_peers.append((dead_ip, dead_port))
                 self.peer_list = list(filter(
                     lambda conn: conn.ip != dead_ip or conn.listener_port != dead_port, self.peer_list))
                 pretty_peers = [connection.pretty()
                                 for connection in self.peer_list]
-                print(pretty_peers)
-                print(self.dead_peers)
+                self.printer.print(pretty_peers, DEBUG_MODE)
+                self.printer.print(self.dead_peers, DEBUG_MODE)
             else:
-                print(f"Invalid message: {message}")
+                self.printer.print(f"Invalid message: {message}")
 
     def accept_peer(self, sock):
         """
@@ -92,7 +99,7 @@ class Seed:
         """
         peer, (peer_ip, peer_port) = sock.accept()
         self.printer.print(
-            f"Received connection from {peer_ip}:{peer_port}", DEBUG_MODE)
+            f"Received connection from {peer_ip}:{peer_port}")
         peer.setblocking(False)
         self.sel.register(peer, read_write_mask,
                           data=Connection(peer, peer_ip, peer_port, socket_type.PEER))
@@ -101,8 +108,10 @@ class Seed:
 
     def service_peer(self, key, mask):
         """
-        Handle all messages from peer.
+        Handle communication with peer.
+
         Cases:
+            - Socket is closed
             - A peer has sent listening port. Send current peer list and add peer to peer list
             - A peer has sent dead node info. Remove peer from peer list
         """
@@ -111,19 +120,18 @@ class Seed:
 
         if mask & selectors.EVENT_READ:
             try:
-                recv_data = sock.recv(PACKET_SIZE).decode(encoding)
-                print(recv_data)
-                if not recv_data:
+                recv_data = sock.recv(PACKET_SIZE)
+                if not recv_data:  # Socket is closed
                     self.printer.print(
                         f"closing connection to {data.ip}:{data.port}", DEBUG_MODE)
                     self.sel.unregister(sock)
                     sock.close()
 
-                else:  # dead node info
-                    self.parse_message(sock, data, recv_data)
+                else:
+                    self.parse_message(sock, data, recv_data.decode(encoding))
 
             except Exception as e:
-                print(e)
+                self.printer.print(f"Error {e}")
                 self.sel.unregister(sock)
                 sock.close()
 
