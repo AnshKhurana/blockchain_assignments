@@ -36,9 +36,13 @@ class socket_type(Enum):
 class Printer(object):
     """Class to handle printing to screen and file."""
 
-    def __init__(self):
+    def __init__(self, seed_or_peer):
         """Print to a file named <pid>.output."""
-        self.file_obj = open(str(os.getpid())+".output", "w")
+        if seed_or_peer == 'SEED':
+            filename = "SEED_"+str(os.getpid())+".output"
+        else:
+            filename = "PEER_"+str(os.getpid())+".output"
+        self.file_obj = open(filename, "w")
 
     def print(self, msg, should_print=True):
         """

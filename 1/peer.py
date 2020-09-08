@@ -62,7 +62,7 @@ class Peer:
         self.message_list = dict()
         self.peer_broadcast_queue = []
 
-        self.printer = Printer()
+        self.printer = Printer('PEER')
 
     def connect_with_seeds(self):
         # connect to the selected seeds
@@ -103,7 +103,7 @@ class Peer:
                             data.socket = socket()
                             data.socket.setblocking(False)
                             self.printer.print(
-                                f"Trying to reconnect to peer {data.ip}:{data.port}")
+                                f"Trying to reconnect to peer {data.ip}:{data.port}", DEBUG_MODE)
                             data.socket.connect_ex((data.ip, data.port))
                             message = liveness_request_msg.format(
                                 current_time, self.ip)
@@ -276,8 +276,7 @@ class Peer:
         message = dead_node_msg.format(
             data.ip, data.listener_port, current_time, self.ip)
         self.seed_broadcast_queue.append(message)
-        self.printer.print(
-            f"Closing connection to {data.ip}:{data.port}", DEBUG_MODE)
+        self.printer.print(f"Sending {message}")
         try:
             self.sel.unregister(sock)
             sock.close()

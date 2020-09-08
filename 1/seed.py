@@ -30,7 +30,7 @@ class Seed:
         self.sel = selectors.DefaultSelector()
         self.dead_peers = []
 
-        self.printer = Printer()
+        self.printer = Printer('SEED')
 
     def run(self):
         # set-up listening socket for selector
