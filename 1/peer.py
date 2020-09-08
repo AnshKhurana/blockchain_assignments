@@ -62,6 +62,8 @@ class Peer:
         self.peer_broadcast_queue = []
 
         self.printer = Printer('PEER')
+        self.printer.print(
+            f"Listening on port {self.listening_port}", DEBUG_MODE)
 
     def connect_with_seeds(self):
         # connect to the selected seeds
@@ -129,10 +131,8 @@ class Peer:
                 self.printer.print(
                     f"connecting to peer {ip}:{port}", DEBUG_MODE)
                 s.connect_ex((ip, port))
-
-                port_message = listening_port_msg.format(self.listening_port)
-                s.sendall(port_message.encode(encoding))
-            except:
+            except Exception as e:
+                self.printer.print(f"Error: {e}", DEBUG_MODE)
                 self.printer.print(
                     f"Failed to connect to {ip}:{port}", DEBUG_MODE)
             else:
@@ -281,6 +281,13 @@ class Peer:
 
             if mask & selectors.EVENT_WRITE:
                 # check the time since the last liveness check
+                if not data.sent_id:  # Send listening port info
+                    self.printer.print(
+                        f"Sending listening info to {data.ip}:{data.port}", DEBUG_MODE)
+                    port_message = listening_port_msg.format(
+                        self.listening_port)
+                    sock.sendall(port_message.encode(encoding))
+                    data.sent_id = True
                 if data.liveness_timestamp is None or current_time-data.liveness_timestamp > datetime.timedelta(seconds=LIVENESS_DELAY):
                     if data.tries_left <= 0:
                         self.handle_dead_peer(sock, data)
