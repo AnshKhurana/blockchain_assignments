@@ -7,7 +7,7 @@ Peer list is updated using messages received from peers
 import json
 import argparse
 from socket import *
-from utils import Connection, socket_type
+from utils import *
 import selectors
 
 encoding = 'utf-8'
@@ -15,11 +15,11 @@ encoding = 'utf-8'
 PACKET_SIZE = 1024
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--ip', help='ip address its running on', type=str, required=True)
-parser.add_argument('--port', help='port number its running on', type=int, required=True)
+parser.add_argument('--ip', help='ip address its running on',
+                    type=str, required=True)
+parser.add_argument(
+    '--port', help='port number its running on', type=int, required=True)
 
-read_mask = selectors.EVENT_READ
-read_write_mask = selectors.EVENT_READ | selectors.EVENT_WRITE
 
 class Seed:
     def __init__(self, ip, port):
@@ -29,7 +29,9 @@ class Seed:
         self.peer_list = []
         self.sel = selectors.DefaultSelector()
         self.dead_peers = []
-        
+
+        self.printer = Printer()
+
     def run(self):
         # set-up listening socket for selector
         listener_socket = socket(AF_INET, SOCK_STREAM)
@@ -41,29 +43,47 @@ class Seed:
         listener_socket.setblocking(False)
         self.sel.register(listener_socket, read_mask, data=Connection(
             listener_socket, self.ip, self.port, socket_type.SELF))
-        print("set up listening socket")
+        self.printer.print(
+            f"Seed listening on {self.ip}:{self.port}", DEBUG_MODE)
 
         while True:
             events = self.sel.select(timeout=None)
             for key, mask in events:
                 if key.data.type == socket_type.SELF:  # New Peer connection
                     self.accept_peer(key.fileobj)
-                elif key.data.type == socket_type.PEER: # New data received from peer
+                elif key.data.type == socket_type.PEER:  # New data received from peer
                     self.service_peer(key, mask)
         listener_socket.close()
 
-    def parse_message(self, sock, data, message):
-        print("received from", data.ip, ":", data.port, ":", message)
-        if message.startswith("Dead Node"):
-            # remove from peer_list and add to dead_peers list so that connection can be broken later
-            [_, dead_ip, dead_port, _, _, _, _] = message.split(':')
-            dead_port = int(dead_port)
-            self.dead_peers.append((dead_ip, dead_port))
-            self.peer_list = list(filter(lambda conn: conn.ip!=dead_ip or conn.listener_port!=dead_port, self.peer_list))
-            pretty_peers = [connection.pretty()
-                                    for connection in self.peer_list]
-            print(pretty_peers)
-            print(self.dead_peers)
+    def parse_message(self, sock, data, message_combined):
+        messages = message_combined.split('~')
+
+        for message in messages:
+            if message == '':
+                continue
+            # peer has sent listening port
+            elif data.listener_port is None and message.startswith("Listening Port"):
+                self.printer.print(
+                    f"recived listening port info {message}", DEBUG_MODE)
+                pretty_peers = [connection.pretty()
+                                for connection in self.peer_list]
+                sock.sendall(json.dumps(pretty_peers).encode(encoding))
+                [_, port] = message.split(':')
+                data.listener_port = int(port)
+                self.peer_list.append(data)
+            elif message.startswith("Dead Node"):
+                # remove from peer_list and add to dead_peers list so that connection can be broken later
+                [_, dead_ip, dead_port, _, _, _, _] = message.split(':')
+                dead_port = int(dead_port)
+                self.dead_peers.append((dead_ip, dead_port))
+                self.peer_list = list(filter(
+                    lambda conn: conn.ip != dead_ip or conn.listener_port != dead_port, self.peer_list))
+                pretty_peers = [connection.pretty()
+                                for connection in self.peer_list]
+                print(pretty_peers)
+                print(self.dead_peers)
+            else:
+                print(f"Invalid message: {message}")
 
     def accept_peer(self, sock):
         """
@@ -71,10 +91,11 @@ class Seed:
         Dont send peer list as we haven't received listening port yet
         """
         peer, (peer_ip, peer_port) = sock.accept()
-        print("Received connection from", peer_ip, peer_port)
+        self.printer.print(
+            f"Received connection from {peer_ip}:{peer_port}", DEBUG_MODE)
         peer.setblocking(False)
         self.sel.register(peer, read_write_mask,
-                    data=Connection(peer, peer_ip, peer_port, socket_type.PEER))
+                          data=Connection(peer, peer_ip, peer_port, socket_type.PEER))
 
     # Not sure how sendall works with select call. Definite way is to use send repeatedly
 
@@ -93,23 +114,14 @@ class Seed:
                 recv_data = sock.recv(PACKET_SIZE).decode(encoding)
                 print(recv_data)
                 if not recv_data:
-                    print("closing connection to", data.ip, ":", data.port)
+                    self.printer.print(
+                        f"closing connection to {data.ip}:{data.port}", DEBUG_MODE)
                     self.sel.unregister(sock)
                     sock.close()
-                
-                # peer has sent listening port
-                elif data.listener_port is None:
-                    id = json.loads(recv_data)
-                    print("received listening port info", id)
-                    pretty_peers = [connection.pretty()
-                                    for connection in self.peer_list]
-                    sock.sendall(json.dumps(pretty_peers).encode(encoding))
-                    key.data.listener_port = id['port']
-                    self.peer_list.append(key.data)
-                
+
                 else:  # dead node info
                     self.parse_message(sock, data, recv_data)
-            
+
             except Exception as e:
                 print(e)
                 self.sel.unregister(sock)
@@ -119,10 +131,12 @@ class Seed:
             # check if the peer is dead, if yes break connection
             for (dead_ip, dead_port) in self.dead_peers:
                 if(data.ip == dead_ip and data.listener_port == dead_port):
-                    print("closing connection to", data.ip, ":", data.port)
+                    self.printer.print(
+                        f"closing connection to {data.ip}:{data.port}", DEBUG_MODE)
                     self.sel.unregister(sock)
                     sock.close()
-        
+
+
 if __name__ == "__main__":
     args = parser.parse_args()
     s = Seed(args.ip, args.port)
