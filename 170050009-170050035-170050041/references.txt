@@ -1,0 +1,2 @@
+1. http://www.dabeaz.com/python/PythonNetBinder.pdf
+2. https://realpython.com/python-sockets/
