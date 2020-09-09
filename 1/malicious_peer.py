@@ -91,6 +91,8 @@ class Peer:
                     # Does this need to be printed?
                     self.printer.print(
                         f"Generated my own gossip message: {self.gossip_sent}", DEBUG_MODE)
+                    message_hash = sha256(message.encode(encoding)).hexdigest()
+                    self.message_list[message_hash] = True
 
             events = self.sel.select(timeout=None)
 
@@ -183,7 +185,7 @@ class Peer:
                 for message in self.seed_broadcast_queue:
                     if message not in data.sent_messages:
                         self.printer.print(
-                            f"Sending dead node message to {data.ip}:{data.port} {message}", DEBUG_MODE)
+                            f"Reporting dead node message to {data.ip}:{data.port} {message}", DEBUG_MODE)
                         sock.sendall((message).encode(encoding))
                         data.sent_messages.append(message)
         except Exception as e:
