@@ -90,7 +90,7 @@ class Peer:
                     self.gossip_timestamp = current_time
                     # Does this need to be printed?
                     self.printer.print(
-                        f"Generated my own gossip message: {self.gossip_sent}")
+                        f"Generated my own gossip message: {self.gossip_sent}", DEBUG_MODE)
 
             events = self.sel.select(timeout=None)
 

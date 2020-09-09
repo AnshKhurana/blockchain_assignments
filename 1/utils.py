@@ -18,7 +18,7 @@ import os
 MAX_TRIES = 3  # maximum 3 timeouts for liveness testing
 read_mask = selectors.EVENT_READ
 read_write_mask = selectors.EVENT_READ | selectors.EVENT_WRITE
-DEBUG_MODE = True  # Change to false for submission
+DEBUG_MODE = False  # Change to false for submission
 
 dead_node_msg = "Dead Node:{}:{}:{}:{}~"
 listening_port_msg = "Listening Port:{}~"
@@ -49,9 +49,10 @@ class Printer(object):
         Writes to screen and to file.
         Use second argument to specify if writing is conditional on debug mode
         """
+        msg = msg.replace('~','')
         if should_print:
             print(msg)
-            self.file_obj.write(msg)
+            self.file_obj.write(msg+"\n")
 
 
 class Connection(object):
