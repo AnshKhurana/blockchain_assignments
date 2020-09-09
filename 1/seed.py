@@ -81,7 +81,7 @@ class Seed:
                 # remove from peer_list and add to dead_peers list so that connection can be broken later
                 [_, dead_ip, dead_port, _, _, _, _] = message.split(':')
                 dead_port = int(dead_port)
-                self.printer.print(f"Received dead node msg {message}")
+                self.printer.print(f"Receiving Dead node message {message}")
                 self.dead_peers.append((dead_ip, dead_port))
                 self.peer_list = list(filter(
                     lambda conn: conn.ip != dead_ip or conn.listener_port != dead_port, self.peer_list))

@@ -183,7 +183,7 @@ class Peer:
                 for message in self.seed_broadcast_queue:
                     if message not in data.sent_messages:
                         self.printer.print(
-                            f"Sending dead node message to {data.ip}:{data.port} {message}", DEBUG_MODE)
+                            f"Reporting dead node message to {data.ip}:{data.port} {message}", DEBUG_MODE)
                         sock.sendall((message).encode(encoding))
                         data.sent_messages.append(message)
         except Exception as e:
@@ -244,7 +244,7 @@ class Peer:
         message = dead_node_msg.format(
             data.ip, data.listener_port, current_time, self.ip)
         self.seed_broadcast_queue.append(message)
-        self.printer.print(f"Sending {message}")
+        self.printer.print(f"Reporting {message}")
         try:
             self.sel.unregister(sock)
             sock.close()
