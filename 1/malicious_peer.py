@@ -240,11 +240,11 @@ class Peer:
                     # self.message_list.append((hash(message), ))
 
     def handle_dead_peer(self, sock, data):
-        current_time = datetime.datetime.now(tz=None)
-        message = dead_node_msg.format(
-            data.ip, data.listener_port, current_time, self.ip)
-        self.seed_broadcast_queue.append(message)
-        self.printer.print(f"Sending {message}")
+        # current_time = datetime.datetime.now(tz=None)
+        # message = dead_node_msg.format(
+        #     data.ip, data.listener_port, current_time, self.ip)
+        # self.seed_broadcast_queue.append(message)
+        # self.printer.print(f"Sending {message}")
         try:
             self.sel.unregister(sock)
             sock.close()
