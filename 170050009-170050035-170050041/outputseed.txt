@@ -1,3 +1,0 @@
-Received connection from 127.0.0.1:51256
-Received connection from 127.0.0.1:51262
-Receiving Dead node message Dead Node:127.0.0.1:41407:2020-09-09 21:11:24.781223:0.0.0.0
