@@ -29,7 +29,6 @@ dead_node_msg = "Dead Node:{}:{}:{}:{}~"
 listening_port_msg = "Listening Port:{}~"
 liveness_request_msg = "Liveness Request:{}:{}:{}~"
 liveness_reply_msg = "Liveness Reply:{}:{}:{}:{}:{}~"
-gossip_msg = "{}:{}:{}~"
 block_msg = "{}~"
 height_msg = "Height:{}~"
 sync_complete_msg = "Sync Complete~"
@@ -175,7 +174,7 @@ class Connection(object):
         self.listener_port = listener_port
         # timestamp of the last liveness message sent on this socket
         self.liveness_timestamp = None
-        # self.gossip_timestamp = None
+
         self.tries_left = MAX_TRIES
         self.sent_messages = []
         self.hashed_sent = []

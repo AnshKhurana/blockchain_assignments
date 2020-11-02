@@ -23,8 +23,6 @@ encoding = 'utf-8'
 PACKET_SIZE = 1024
 MAX_CONNECTED_PEERS = 4
 LIVENESS_DELAY = 13  # 13 seconds for each message
-GOSSIP_DELAY = 5  # send a message every 5 seconds
-GOSSIP_SEND_LIMIT = 10  # send only 10 messages
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--interarrival_time', type=float, required=True)
@@ -59,10 +57,7 @@ class Peer:
 
         # Pending messages that must be broadcasted to all seeds connected with it
         self.seed_broadcast_queue = []
-        self.start_making = False
-        # timestamp of the last gossip message sent by this peer
-        self.gossip_timestamp = None
-        self.gossip_sent = 0
+        
         self.message_list = dict()
         self.peer_broadcast_queue = []
 
@@ -90,22 +85,6 @@ class Peer:
 
     def run(self):
         while True:
-
-            # make gossip message and push
-            # current_time = datetime.datetime.now(tz=None)
-            # if self.gossip_sent < GOSSIP_SEND_LIMIT and self.start_making:
-            #     if self.gossip_timestamp is None or (current_time-self.gossip_timestamp) > datetime.timedelta(seconds=GOSSIP_DELAY):
-            #         message = gossip_msg.format(
-            #             current_time, self.ip, self.gossip_sent)
-            #         # None, None -> no constraint when sending your own
-            #         self.peer_broadcast_queue.append((message, None, None))
-            #         self.gossip_sent += 1
-            #         self.gossip_timestamp = current_time
-            #         # Does this need to be printed?
-            #         self.printer.print(
-            #             f"Generated my own gossip message: {self.gossip_sent}", DEBUG_MODE)
-            #         message_hash = sha256(message.encode(encoding)).hexdigest()
-            #         self.message_list[message_hash] = True
 
             current_time = datetime.datetime.now(tz=None)
             # It has synced blockchain with all peers, now it can start mining
@@ -192,8 +171,7 @@ class Peer:
         self.printer.print("sent connection request to all", DEBUG_MODE)
         self.printer.print(
             f"Number of out neighbours: {len(self.peer_list)}", DEBUG_MODE)
-        self.start_making = True
-
+        
     def service_seed(self, key, mask):
         """
         Handle all requests to/from seed.
@@ -315,7 +293,7 @@ class Peer:
         Handle all requests to/from peer.
         Cases:
             - A peer has sent listening port. Add it to connected peers
-            - Handle gossip and liveness messages
+            - Handle block and liveness messages
         """
         sock = key.fileobj
         data = key.data
@@ -395,17 +373,6 @@ class Peer:
                             sock.sendall(message.encode(encoding))
                             data.hashed_sent.append(message_hash)
 
-                for message, send_not_ip, send_not_port in self.peer_broadcast_queue:
-                    message_hash = sha256(message.encode(encoding)).hexdigest()
-                    if not (message_hash in data.hashed_sent):
-                        if not (send_not_ip == data.ip and send_not_port == data.port):
-                            time_of_msg = datetime.datetime.strptime(
-                                message[:message[:message.rfind(":")].rfind(":")], '%Y-%m-%d %H:%M:%S.%f')
-                            if data.created_at < time_of_msg:
-                                self.printer.print(
-                                    f"Sending gossip message to {data.ip}:{data.port}", DEBUG_MODE)
-                                sock.sendall(message.encode(encoding))
-                                data.hashed_sent.append(message_hash)
         except Exception as e:
             print(str(e))
             self.printer.print(
