@@ -15,6 +15,7 @@ import os
 import selectors
 import datetime
 from hashlib import sha256
+import argparse
 
 encoding = 'utf-8'
 
@@ -25,9 +26,13 @@ LIVENESS_DELAY = 13  # 13 seconds for each message
 GOSSIP_DELAY = 5  # send a message every 5 seconds
 GOSSIP_SEND_LIMIT = 10  # send only 10 messages
 
+parser = argparse.ArgumentParser()
+parser.add_argument('--interarrival_time', type=float, required=True)
+parser.add_argument('--hash_power', type=float, required=True)
+parser.add_argument('--seed', type=int, required=True)
 
 class Peer:
-    def __init__(self):
+    def __init__(self, args):
         super().__init__()
 
         seeds = findSeeds()
@@ -65,7 +70,13 @@ class Peer:
         self.printer.print(
             f"Listening on port {self.listening_port}", DEBUG_MODE)
 
-        self.miner = Miner()
+        self.miner = Miner(interarrival_time = args.interarrival_time,
+            percentage_hash_power = args.hash_power, seed = args.seed)
+        self.mine_timestamp = None
+        self.start_mining = False
+        self.synced_with = 0 #Number of peers I have synced the blockchain with
+        self.mine_delay = None
+        self.peer_list_valid = False
 
     def connect_with_seeds(self):
         # connect to the selected seeds
@@ -81,20 +92,48 @@ class Peer:
         while True:
 
             # make gossip message and push
+            # current_time = datetime.datetime.now(tz=None)
+            # if self.gossip_sent < GOSSIP_SEND_LIMIT and self.start_making:
+            #     if self.gossip_timestamp is None or (current_time-self.gossip_timestamp) > datetime.timedelta(seconds=GOSSIP_DELAY):
+            #         message = gossip_msg.format(
+            #             current_time, self.ip, self.gossip_sent)
+            #         # None, None -> no constraint when sending your own
+            #         self.peer_broadcast_queue.append((message, None, None))
+            #         self.gossip_sent += 1
+            #         self.gossip_timestamp = current_time
+            #         # Does this need to be printed?
+            #         self.printer.print(
+            #             f"Generated my own gossip message: {self.gossip_sent}", DEBUG_MODE)
+            #         message_hash = sha256(message.encode(encoding)).hexdigest()
+            #         self.message_list[message_hash] = True
+
             current_time = datetime.datetime.now(tz=None)
-            if self.gossip_sent < GOSSIP_SEND_LIMIT and self.start_making:
-                if self.gossip_timestamp is None or (current_time-self.gossip_timestamp) > datetime.timedelta(seconds=GOSSIP_DELAY):
-                    message = gossip_msg.format(
-                        current_time, self.ip, self.gossip_sent)
-                    # None, None -> no constraint when sending your own
-                    self.peer_broadcast_queue.append((message, None, None))
-                    self.gossip_sent += 1
-                    self.gossip_timestamp = current_time
-                    # Does this need to be printed?
-                    self.printer.print(
-                        f"Generated my own gossip message: {self.gossip_sent}", DEBUG_MODE)
-                    message_hash = sha256(message.encode(encoding)).hexdigest()
+            # It has synced blockchain with all peers, now it can start mining
+            if self.peer_list_valid and self.synced_with == len(self.peer_list) and not self.start_mining:
+                self.start_mining = True
+                self.mine_timestamp = current_time
+                self.mine_delay = self.miner.waiting_time()
+
+            # Block generation and broadcasting
+            if self.start_mining and (current_time - self.mine_timestamp) > self.mine_delay:
+                block_string = self.miner.mine()
+                self.printer.print(f"Generated a block: {block_string}", DEBUG_MODE)
+                self.peer_broadcast_queue.append((block_string, None, None))
+                message_hash = sha256(block_string.encode(encoding)).hexdigest()
+                self.message_list[message_hash] = True
+                self.mine_timestamp = current_time
+                self.mine_delay = self.miner.waiting_time()
+
+            # Non-empty pending queue -> stop mining, process the pending_queue and broadcast valid blocks
+            if not self.miner.pending_queue.empty():
+                block_strings = self.miner.process_pending_queue()
+                for block_string in block_strings:
+                    self.peer_broadcast_queue.append((block_string, None, None))
+                    message_hash = sha256(block_string.encode(encoding)).hexdigest()
                     self.message_list[message_hash] = True
+                current_time = datetime.datetime.now(tz=None)
+                self.mine_timestamp = current_time
+                self.mine_delay = self.miner.waiting_time()
 
             events = self.sel.select(timeout=None)
 
@@ -127,6 +166,7 @@ class Peer:
         self.printer.print(f"Received Peer List is {peer_list}")
         random.shuffle(peer_list)
         self.peer_list = peer_list[:min(len(peer_list), MAX_CONNECTED_PEERS)]
+        self.peer_list_valid = True
 
         for (ip, port) in self.peer_list:
             try:
@@ -330,7 +370,7 @@ class Peer:
 
 
 if __name__ == "__main__":
-
-    p = Peer()
+    args = parser.parse_args()
+    p = Peer(args)
     p.connect_with_seeds()
     p.run()

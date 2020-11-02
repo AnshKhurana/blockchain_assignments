@@ -22,7 +22,7 @@ from queue import Queue
 MAX_TRIES = 3  # maximum 3 timeouts for liveness testing
 read_mask = selectors.EVENT_READ
 read_write_mask = selectors.EVENT_READ | selectors.EVENT_WRITE
-DEBUG_MODE = False # Change to false for submission
+DEBUG_MODE = True # Change to false for submission
 
 dead_node_msg = "Dead Node:{}:{}:{}:{}~"
 listening_port_msg = "Listening Port:{}~"
@@ -44,7 +44,7 @@ class Block(object):
     def __str__(self):
         return '_'.join([self.previous_hash, self.merkel_root, self.timestamp, self.level])
 
-    def __hash__(self):
+    def sha3(self):
         # Don't include self.level while generating hash of block
         block_string = ''.join([self.previous_hash, self.merkel_root, self.timestamp])
         return find_sha3(block_string)
@@ -68,7 +68,7 @@ class Blockchain(object):
             return True
 
     def add(self, block):
-        block_hash = hash(block)
+        block_hash = block.sha3()
         if block_hash in self.tree:
             return
         self.tree[block_hash] = block
@@ -94,7 +94,7 @@ class Miner(object):
         merkel_root = "0"*4
         level = self.blockchain.max_level + 1
         previous_hash = self.blockchain.max_block_hash
-        block_string = '_'.join([previous_hash, merkel_root, timestamp, level])
+        block_string = '_'.join([previous_hash, merkel_root, str(timestamp), str(level)])
         block = Block(block_string)
         self.blockchain.add(block)
         return block_string
@@ -117,7 +117,7 @@ class Miner(object):
 
     def process_pending_queue(self):
         valid_block_strings = []
-        while !self.pending_queue.empty():
+        while not self.pending_queue.empty():
             block = self.pending_queue.get()
             if self.blockchain.validate(block):
                 self.blockchain.add(block)
