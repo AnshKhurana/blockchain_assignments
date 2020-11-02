@@ -42,7 +42,7 @@ class Block(object):
         self.level = int(self.level)
 
     def __str__(self):
-        return '_'.join([self.previous_hash, self.merkel_root, self.timestamp, self.level])
+        return '_'.join([self.previous_hash, self.merkel_root, self.timestamp, str(self.level)])
 
     def sha3(self):
         # Don't include self.level while generating hash of block

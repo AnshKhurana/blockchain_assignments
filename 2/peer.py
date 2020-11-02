@@ -109,7 +109,8 @@ class Peer:
 
             current_time = datetime.datetime.now(tz=None)
             # It has synced blockchain with all peers, now it can start mining
-            if self.peer_list_valid and self.synced_with == len(self.peer_list) and not self.start_mining:
+            # if self.peer_list_valid and self.synced_with == len(self.peer_list) and not self.start_mining:
+            if self.peer_list_valid and not self.start_mining:
                 self.start_mining = True
                 self.mine_timestamp = current_time
                 self.mine_delay = self.miner.waiting_time()
@@ -272,16 +273,13 @@ class Peer:
 
                 if message_hash in self.message_list.keys():
                     self.printer.print(
-                        f"Received stale msg {message} from {data.ip}:{data.port}.", DEBUG_MODE)
+                        f"Received stale block {message} from {data.ip}:{data.port}.", DEBUG_MODE)
                 else:
                     self.printer.print(
-                        f"Received new gossip message {message} from {data.ip}:{data.port} at {datetime.datetime.now(tz=None)}")
+                        f"Received new block: {message} from {data.ip}:{data.port} at {datetime.datetime.now(tz=None)}")
                     self.message_list[message_hash] = True
-                    # message with sender info
-                    self.peer_broadcast_queue.append(
-                        (message, data.ip, data.port))
-
-                    # self.message_list.append((hash(message), ))
+                    block = Block(message)
+                    self.miner.add_to_pending_queue(block)
 
     def handle_dead_peer(self, sock, data):
         current_time = datetime.datetime.now(tz=None)
@@ -352,13 +350,22 @@ class Peer:
                     message_hash = sha256(message.encode(encoding)).hexdigest()
                     if not (message_hash in data.hashed_sent):
                         if not (send_not_ip == data.ip and send_not_port == data.port):
-                            time_of_msg = datetime.datetime.strptime(
-                                message[:message[:message.rfind(":")].rfind(":")], '%Y-%m-%d %H:%M:%S.%f')
-                            if data.created_at < time_of_msg:
-                                self.printer.print(
-                                    f"Sending gossip message to {data.ip}:{data.port}", DEBUG_MODE)
-                                sock.sendall(message.encode(encoding))
-                                data.hashed_sent.append(message_hash)
+                            self.printer.print(
+                                f"Sending block: {message} to {data.ip}:{data.port}", DEBUG_MODE)
+                            sock.sendall(message.encode(encoding))
+                            data.hashed_sent.append(message_hash)
+
+                # for message, send_not_ip, send_not_port in self.peer_broadcast_queue:
+                #     message_hash = sha256(message.encode(encoding)).hexdigest()
+                #     if not (message_hash in data.hashed_sent):
+                #         if not (send_not_ip == data.ip and send_not_port == data.port):
+                #             time_of_msg = datetime.datetime.strptime(
+                #                 message[:message[:message.rfind(":")].rfind(":")], '%Y-%m-%d %H:%M:%S.%f')
+                #             if data.created_at < time_of_msg:
+                #                 self.printer.print(
+                #                     f"Sending gossip message to {data.ip}:{data.port}", DEBUG_MODE)
+                #                 sock.sendall(message.encode(encoding))
+                #                 data.hashed_sent.append(message_hash)
         except Exception as e:
             print(str(e))
             self.printer.print(
