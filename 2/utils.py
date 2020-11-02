@@ -23,12 +23,16 @@ MAX_TRIES = 3  # maximum 3 timeouts for liveness testing
 read_mask = selectors.EVENT_READ
 read_write_mask = selectors.EVENT_READ | selectors.EVENT_WRITE
 DEBUG_MODE = True # Change to false for submission
+LIVENESS_DEBUG_MODE = False # Change to false for submission
 
 dead_node_msg = "Dead Node:{}:{}:{}:{}~"
 listening_port_msg = "Listening Port:{}~"
 liveness_request_msg = "Liveness Request:{}:{}:{}~"
 liveness_reply_msg = "Liveness Reply:{}:{}:{}:{}:{}~"
 gossip_msg = "{}:{}:{}~"
+block_msg = "{}~"
+height_msg = "Height:{}~"
+sync_complete_msg = "Sync Complete~"
 
 def find_sha3(message):
     hasher = hashlib.sha3_256()
@@ -176,6 +180,10 @@ class Connection(object):
         self.sent_messages = []
         self.hashed_sent = []
         self.created_at = datetime.datetime.now(tz=None)
+
+        # Height sent by this peer
+        self.k = -1
+        self.sent_k = True
 
     def pretty(self):
         """Return ip and port info."""

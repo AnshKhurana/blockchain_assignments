@@ -109,19 +109,8 @@ class Peer:
 
             current_time = datetime.datetime.now(tz=None)
             # It has synced blockchain with all peers, now it can start mining
-            # if self.peer_list_valid and self.synced_with == len(self.peer_list) and not self.start_mining:
-            if self.peer_list_valid and not self.start_mining:
+            if self.peer_list_valid and self.synced_with == len(self.peer_list) and not self.start_mining:
                 self.start_mining = True
-                self.mine_timestamp = current_time
-                self.mine_delay = self.miner.waiting_time()
-
-            # Block generation and broadcasting
-            if self.start_mining and (current_time - self.mine_timestamp) > self.mine_delay:
-                block_string = self.miner.mine()
-                self.printer.print(f"Generated a block: {block_string}", DEBUG_MODE)
-                self.peer_broadcast_queue.append((block_string, None, None))
-                message_hash = sha256(block_string.encode(encoding)).hexdigest()
-                self.message_list[message_hash] = True
                 self.mine_timestamp = current_time
                 self.mine_delay = self.miner.waiting_time()
 
@@ -129,10 +118,20 @@ class Peer:
             if not self.miner.pending_queue.empty():
                 block_strings = self.miner.process_pending_queue()
                 for block_string in block_strings:
-                    self.peer_broadcast_queue.append((block_string, None, None))
+                    self.peer_broadcast_queue.append((block_msg.format(block_string), None, None))
                     message_hash = sha256(block_string.encode(encoding)).hexdigest()
                     self.message_list[message_hash] = True
                 current_time = datetime.datetime.now(tz=None)
+                self.mine_timestamp = current_time
+                self.mine_delay = self.miner.waiting_time()
+
+            # Block generation and broadcasting
+            if self.start_mining and (current_time - self.mine_timestamp) > self.mine_delay:
+                block_string = self.miner.mine()
+                self.printer.print(f"Generated a block: {block_string}", DEBUG_MODE)
+                self.peer_broadcast_queue.append((block_msg.format(block_string), None, None))
+                message_hash = sha256(block_string.encode(encoding)).hexdigest()
+                self.message_list[message_hash] = True
                 self.mine_timestamp = current_time
                 self.mine_delay = self.miner.waiting_time()
 
@@ -155,8 +154,14 @@ class Peer:
         self.printer.print(
             f"Received connection from {peer_ip}:{peer_port}", DEBUG_MODE)
         peer.setblocking(False)
+        data = Connection(peer, peer_ip, peer_port, socket_type.PEER)
+        data.sent_k = False
+        for message, _, _ in self.peer_broadcast_queue:
+            message_hash = sha256(message.encode(encoding)).hexdigest()
+            data.hashed_sent.append(message_hash)
         self.sel.register(peer, read_write_mask,
-                          data=Connection(peer, peer_ip, peer_port, socket_type.PEER))
+                          data=data)
+
 
     def connect_with_peers(self):
 
@@ -245,7 +250,7 @@ class Peer:
         for message in messages:
             if message.startswith("Liveness Request"):
                 self.printer.print(
-                    f"Received a liveness request from {data.ip}:{data.port}:{message}", DEBUG_MODE)
+                    f"Received a liveness request from {data.ip}:{data.port}:{message}", LIVENESS_DEBUG_MODE)
                 # need to respond with a liveness reply
                 [_, sender_date, sender_min, sender_sec,
                     sender_ip, sender_port] = message.split(':')
@@ -254,18 +259,27 @@ class Peer:
                 reply = liveness_reply_msg.format(
                     sender_timestamp, sender_ip, sender_port, self.ip, self.listening_port)
                 self.printer.print(
-                    f"Sending liveness reply to {data.ip}:{data.listener_port}", DEBUG_MODE)
+                    f"Sending liveness reply to {data.ip}:{data.listener_port}", LIVENESS_DEBUG_MODE)
                 sock.sendall(reply.encode(encoding))
             elif message.startswith("Liveness Reply"):
                 # must update that the peer is active
                 self.printer.print(
-                    f"Received a liveness reply from {data.ip}:{data.port} {message}", DEBUG_MODE)
+                    f"Received a liveness reply from {data.ip}:{data.port} {message}", LIVENESS_DEBUG_MODE)
                 data.tries_left = MAX_TRIES
             elif message.startswith("Listening Port"):
                 self.printer.print(
                     f"Received information about listening port from {data.ip}:{data.port} {message}", DEBUG_MODE)
                 [_, port] = message.split(':')
                 data.listener_port = int(port)
+            elif message.startswith("Height"):
+                [_, k] = message.split(':')
+                self.printer.print(
+                    f"Received k = {k} from {data.ip}:{data.port} via: {message}", DEBUG_MODE)
+                data.k = int(k)
+            elif message.startswith("Sync Complete"):
+                self.printer.print(
+                    f"Received {message} from {data.ip}:{data.port} via: {message}", DEBUG_MODE)
+                self.synced_with += 1
             elif message == '':
                 continue
             else:
@@ -279,7 +293,10 @@ class Peer:
                         f"Received new block: {message} from {data.ip}:{data.port} at {datetime.datetime.now(tz=None)}")
                     self.message_list[message_hash] = True
                     block = Block(message)
-                    self.miner.add_to_pending_queue(block)
+                    if block.level >= data.k:
+                        self.miner.add_to_pending_queue(block)
+                    else:
+                        self.miner.add_to_tree(block)
 
     def handle_dead_peer(self, sock, data):
         current_time = datetime.datetime.now(tz=None)
@@ -330,6 +347,29 @@ class Peer:
                         self.listening_port)
                     sock.sendall(port_message.encode(encoding))
                     data.sent_id = True
+
+                # send height info and then send all the blocks
+                if not data.sent_k:
+                    height_message = height_msg.format(self.miner.blockchain.max_level)
+                    self.printer.print(
+                        f"Sending message {height_message} to {data.ip}:{data.port}", DEBUG_MODE)
+                    sock.sendall(height_message.encode(encoding))
+                    data.sent_k = True
+                    
+                    # Syncing my blocks
+                    block_strings = self.miner.get_blocks_in_chain()
+                    for block_string in block_strings:
+                        block_message = block_msg.format(block_string)
+                        self.printer.print(
+                            f"Syncing my block: {block_string} with {data.ip}:{data.port}", DEBUG_MODE)
+                        sock.sendall(block_message.encode(encoding))
+
+                    # Send sync complete message to peer
+                    self.printer.print(
+                        f"Sending {sync_complete_msg} to {data.ip}:{data.port}", DEBUG_MODE)
+                    sock.sendall(sync_complete_msg.encode(encoding))
+                    
+                    
                 if data.liveness_timestamp is None or current_time-data.liveness_timestamp > datetime.timedelta(seconds=LIVENESS_DELAY):
                     if data.tries_left <= 0:
                         self.handle_dead_peer(sock, data)
@@ -337,12 +377,12 @@ class Peer:
                         message = liveness_request_msg.format(
                             current_time, self.ip, self.listening_port)
                         self.printer.print(
-                            f"Sending liveness request to {data.ip}:{data.port}", DEBUG_MODE)
+                            f"Sending liveness request to {data.ip}:{data.port}", LIVENESS_DEBUG_MODE)
                         try:
                             sock.sendall(message.encode(encoding))
                         except:
                             self.printer.print(
-                                f"failed to send liveness request to {data.ip}:{data.port}", DEBUG_MODE)
+                                f"failed to send liveness request to {data.ip}:{data.port}", LIVENESS_DEBUG_MODE)
                         data.liveness_timestamp = current_time
                         data.tries_left -= 1
 
@@ -355,17 +395,17 @@ class Peer:
                             sock.sendall(message.encode(encoding))
                             data.hashed_sent.append(message_hash)
 
-                # for message, send_not_ip, send_not_port in self.peer_broadcast_queue:
-                #     message_hash = sha256(message.encode(encoding)).hexdigest()
-                #     if not (message_hash in data.hashed_sent):
-                #         if not (send_not_ip == data.ip and send_not_port == data.port):
-                #             time_of_msg = datetime.datetime.strptime(
-                #                 message[:message[:message.rfind(":")].rfind(":")], '%Y-%m-%d %H:%M:%S.%f')
-                #             if data.created_at < time_of_msg:
-                #                 self.printer.print(
-                #                     f"Sending gossip message to {data.ip}:{data.port}", DEBUG_MODE)
-                #                 sock.sendall(message.encode(encoding))
-                #                 data.hashed_sent.append(message_hash)
+                for message, send_not_ip, send_not_port in self.peer_broadcast_queue:
+                    message_hash = sha256(message.encode(encoding)).hexdigest()
+                    if not (message_hash in data.hashed_sent):
+                        if not (send_not_ip == data.ip and send_not_port == data.port):
+                            time_of_msg = datetime.datetime.strptime(
+                                message[:message[:message.rfind(":")].rfind(":")], '%Y-%m-%d %H:%M:%S.%f')
+                            if data.created_at < time_of_msg:
+                                self.printer.print(
+                                    f"Sending gossip message to {data.ip}:{data.port}", DEBUG_MODE)
+                                sock.sendall(message.encode(encoding))
+                                data.hashed_sent.append(message_hash)
         except Exception as e:
             print(str(e))
             self.printer.print(
