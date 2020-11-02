@@ -65,6 +65,8 @@ class Peer:
         self.printer.print(
             f"Listening on port {self.listening_port}", DEBUG_MODE)
 
+        self.miner = Miner()
+
     def connect_with_seeds(self):
         # connect to the selected seeds
         for (ip, port) in self.seeds:

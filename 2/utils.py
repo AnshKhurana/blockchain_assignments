@@ -54,14 +54,13 @@ class Blockchain(object):
     def __init__(self):
         self.tree = {}
         self.max_level = 0
+        self.genesis_hash = "9e1c"
         # block to mine on
-        self.max_block_hash = "9e1c"
-        # genesis block
-        self.tree[self.max_block_hash] = None
-
+        self.max_block_hash = self.genesis_hash
+        
     def validate(self, block):
         block_time = int(block.timestamp)
-        if block.previous_hash not in self.tree:
+        if block.previous_hash not in self.tree and block.previous_hash != self.genesis_hash:
             return False
         elif time.time() > block_time + 3600 or time.time() < block_time - 3600:
             return False
@@ -70,10 +69,11 @@ class Blockchain(object):
 
     def add(self, block):
         block_hash = hash(block)
+        if block_hash in self.tree:
+            return
         self.tree[block_hash] = block
         if block.level > self.max_level:
             self.max_level = block.level
-            self.max_block = block
             self.max_block_hash = block_hash
 
 class Miner(object):
@@ -98,6 +98,31 @@ class Miner(object):
         block = Block(block_string)
         self.blockchain.add(block)
         return block_string
+
+    def get_blocks_in_chain(self):
+        block_strings = []
+        block_hash = self.blockchain.max_block_hash
+        while block_hash!= self.blockchain.genesis_hash:
+            block = self.blockchain.tree[block_hash]
+            block_strings.append(str(block))
+            block_hash = block.previous_hash
+        return block_strings[::-1]
+
+    def add_to_pending_queue(self, block):
+        self.pending_queue.put(block)
+
+    def add_to_tree(self, block):
+        if self.blockchain.validate(block):
+            self.blockchain.add(block)
+
+    def process_pending_queue(self):
+        valid_block_strings = []
+        while !self.pending_queue.empty():
+            block = self.pending_queue.get()
+            if self.blockchain.validate(block):
+                self.blockchain.add(block)
+                valid_block_strings.append(str(block))
+        return valid_block_strings
 
 
 class socket_type(Enum):
