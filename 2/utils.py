@@ -123,7 +123,7 @@ class Miner(object):
             [previous_hash, merkel_root, str(timestamp), str(level)])
         block = Block(block_string)
         self.blockchain.add(block)
-        return block_string
+        return block_string, block.sha3()
 
     def get_blocks_in_chain(self):
         block_strings = []

@@ -117,9 +117,9 @@ class Peer:
 
             # Block generation and broadcasting
             if self.start_mining and (current_time - self.mine_timestamp) > self.mine_delay:
-                block_string = self.miner.mine()
+                block_string, block_hash = self.miner.mine()
                 self.printer.print(
-                    f"Generated a block: {block_string}", DEBUG_MODE)
+                    f"Generated a block: {block_string} with hash {block_hash}", DEBUG_MODE)
                 self.peer_broadcast_queue.append(
                     (block_msg.format(block_string), None, None))
                 message_hash = sha256(
@@ -280,13 +280,15 @@ class Peer:
                     self.printer.print(
                         f"Received stale block {message} from {data.ip}:{data.port}.", DEBUG_MODE)
                 else:
-                    self.printer.print(
-                        f"Received new block: {message} from {data.ip}:{data.port} at {datetime.datetime.now(tz=None)}")
                     self.message_list[message_hash] = True
                     block = Block(message)
+                    self.printer.print(
+                        f"Received new block: {message} with hash {block.sha3()} from {data.ip}:{data.port} at {datetime.datetime.now(tz=None)}")
+                    self.printer.print(
+                        f"Block level is{block.level}, k is {data.k}", DEBUG_MODE)
                     if block.level >= data.k:
-                        self.miner.add_to_pending_queue
-                        (block, data.ip, data.port)
+                        self.miner.add_to_pending_queue(
+                            block, data.ip, data.port)
                     else:
                         self.miner.add_to_tree(block)
 
