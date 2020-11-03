@@ -14,7 +14,7 @@ Majority part of the assignment is done. Precisely, all the part of the assignme
 1. The correction in Assignment 1 where we had to ensure dead node message after some time of Ctrl+C
 2. Storing blocks in database, I have only stored them in RAM
 3. Simulating network delays (one easy way would be to store timestamp while generating message and wait for a delay before sending it, ask Bhoyar) - done
-4. Block flooding attack (malicious peer)
+4. Block flooding attack (malicious peer)-done
 5. Experimentation and plots
 6. Plotting blockchain tree using graphics tool.-done
 
