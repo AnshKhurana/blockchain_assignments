@@ -5,6 +5,7 @@ __pycache__/
 
 # Output
 *.output
+*.png
 
 # C extensions
 *.so

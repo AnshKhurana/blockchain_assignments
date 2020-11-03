@@ -18,6 +18,8 @@ import time
 import hashlib
 import numpy as np
 from queue import Queue
+import networkx as nx
+import matplotlib.pyplot as plt
 
 MAX_TRIES = 3  # maximum 3 timeouts for liveness testing
 read_mask = selectors.EVENT_READ
@@ -61,12 +63,16 @@ class Block(object):
 class Blockchain(object):
     """ Class to handle blockchain structure """
 
-    def __init__(self):
+    def __init__(self, draw):
         self.tree = {}
         self.max_level = 0
         self.genesis_hash = "9e1c"
         # block to mine on
         self.max_block_hash = self.genesis_hash
+        self.filename = None
+        if draw:
+            self.filename = "CHAIN_"+str(os.getpid())+".png"
+            self.chain = nx.Graph()
 
     def validate(self, block):
         block_time = int(block.timestamp)
@@ -82,17 +88,24 @@ class Blockchain(object):
         if block_hash in self.tree:
             return
         self.tree[block_hash] = block
+        if self.filename:
+            plt.clf()
+            self.chain.add_edge(str(block.previous_hash), str(block_hash))
+            nx.draw(self.chain, with_labels=True)
+            plt.savefig(self.filename)
+
         if block.level > self.max_level:
             self.max_level = block.level
             self.max_block_hash = block_hash
+        print("added", self.tree)
 
 
 class Miner(object):
     """ Class to handle the mining roles of a peer """
 
-    def __init__(self, interarrival_time, percentage_hash_power, seed):
+    def __init__(self, interarrival_time, percentage_hash_power, seed, draw):
         self.node_lambda = percentage_hash_power / (100.0*interarrival_time)
-        self.blockchain = Blockchain()
+        self.blockchain = Blockchain(draw)
         self.pending_queue = Queue(maxsize=-1)
         np.random.seed(seed)
 
