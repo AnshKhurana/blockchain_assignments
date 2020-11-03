@@ -2,9 +2,9 @@
 $ python seed.py --ip <ip_of_seed> --port <port_of_seed>
 
 # On peer node, config.txt must be in the same directory
-$ python3 peer.py --hash_power 50 --interarrival_time 2 --seed 2 --net_delay 0.1 --draw false
+$ python3 peer.py --hash_power 50 --interarrival_time 2 --seed 2 --net_delay 0.1 --draw --mal 0.1
 
-Here, hash_power is in percentage, interarrival_time is the global effective interarrival_time, seed denotes the random seed
+Here, hash_power is in percentage, interarrival_time is the global effective interarrival_time, seed denotes the random seed. net_delay is the mean of the random delay introduced. --draw tells to draw the tree. --mal is the fraction of nodes to flood. 0 if not malicious
 
 # Clarifications
 1. When a new peer joins the network, it syncs with all the peers connected to it and asks them for their longest chain. Then it selects the longest chain amongst those shared by the peers as its chain and mines on that.
@@ -16,10 +16,12 @@ Majority part of the assignment is done. Precisely, all the part of the assignme
 3. Simulating network delays (one easy way would be to store timestamp while generating message and wait for a delay before sending it, ask Bhoyar) - done
 4. Block flooding attack (malicious peer)
 5. Experimentation and plots
-6. Plotting blockchain tree using graphics tool.
+6. Plotting blockchain tree using graphics tool.-done
 
 
 Service peer line 377
-Should there be a break in the if part to avoid using sock.sendall consecutively twice-doesn't apply now
+Should there be a break in the if part to avoid using sock.sendall consecutively twice-fixed
 
-Netwoek delay uses a Queue in each connection so delay is random but blocks will alwyas go in order
+Network delay uses a Queue in each connection so delay is random but blocks will alwyas go in order
+
+Need to check if all randomness is seeded

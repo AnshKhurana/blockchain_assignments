@@ -30,6 +30,7 @@ parser.add_argument('--hash_power', type=float, required=True)
 parser.add_argument('--seed', type=int, required=True)
 parser.add_argument('--net_delay', type=float, required=True)
 parser.add_argument('--draw', action='store_true')
+parser.add_argument('--mal', type=float, default=-1)
 
 
 class Peer:
@@ -78,6 +79,8 @@ class Peer:
 
         self.net_delay_mean = args.net_delay
         self.delayed_timestamp = datetime.datetime.now(tz=None)
+
+        self.malicious = args.mal  # fraction of nodes to flood. zero if not malicious
 
     def get_delayed_timestamp(self):
         return datetime.timedelta(seconds=np.random.exponential(self.net_delay_mean)) + datetime.datetime.now(tz=None)
@@ -147,7 +150,8 @@ class Peer:
         self.printer.print(
             f"Received connection from {peer_ip}:{peer_port}", DEBUG_MODE)
         peer.setblocking(False)
-        data = Connection(peer, peer_ip, peer_port, socket_type.PEER)
+        data = Connection(peer, peer_ip, peer_port,
+                          socket_type.PEER, malicious=self.malicious)
         data.sent_k = False
         for message, _, _ in self.peer_broadcast_queue:
             message_hash = sha256(message.encode(encoding)).hexdigest()
@@ -179,7 +183,7 @@ class Peer:
                     f"Failed to connect to {ip}:{port}", DEBUG_MODE)
             else:
                 self.sel.register(s, read_write_mask,
-                                  data=Connection(s, ip, port, sock_type=socket_type.PEER, listener_port=port))
+                                  data=Connection(s, ip, port, sock_type=socket_type.PEER, listener_port=port, malicious=self.malicious))
 
         self.printer.print("sent connection request to all", DEBUG_MODE)
         self.printer.print(
@@ -284,8 +288,6 @@ class Peer:
                     block = Block(message)
                     self.printer.print(
                         f"Received new block: {message} with hash {block.sha3()} from {data.ip}:{data.port} at {datetime.datetime.now(tz=None)}")
-                    self.printer.print(
-                        f"Block level is{block.level}, k is {data.k}", DEBUG_MODE)
                     if block.level >= data.k:
                         self.miner.add_to_pending_queue(
                             block, data.ip, data.port)
@@ -343,7 +345,7 @@ class Peer:
                     data.sent_id = True
 
                 # send height info and then send all the blocks
-                if not data.sent_k:
+                elif not data.sent_k:
                     height_message = height_msg.format(
                         self.miner.blockchain.max_level)
                     self.printer.print(
@@ -364,7 +366,7 @@ class Peer:
                         f"Sending {sync_complete_msg} to {data.ip}:{data.port}", DEBUG_MODE)
                     sock.sendall(sync_complete_msg.encode(encoding))
 
-                if data.liveness_timestamp is None or current_time-data.liveness_timestamp > datetime.timedelta(seconds=LIVENESS_DELAY):
+                elif data.liveness_timestamp is None or current_time-data.liveness_timestamp > datetime.timedelta(seconds=LIVENESS_DELAY):
                     if data.tries_left <= 0:
                         self.handle_dead_peer(sock, data)
                     else:
@@ -380,19 +382,32 @@ class Peer:
                         data.liveness_timestamp = current_time
                         data.tries_left -= 1
 
-                for message, send_not_ip, send_not_port in self.peer_broadcast_queue:
-                    message_hash = sha256(message.encode(encoding)).hexdigest()
-                    if not (message_hash in data.hashed_sent):
-                        if not (send_not_ip == data.ip and send_not_port == data.port):
-                            self.printer.print(
-                                f"Sending block: {message} to {data.ip}:{data.port}", DEBUG_MODE)
-                            data.delayed_queue.put(message.encode(encoding))
-                            self.delayed_timestamp = self.get_delayed_timestamp()
-                            data.hashed_sent.append(message_hash)
-
-                if not data.delayed_queue.empty() and datetime.datetime.now(tz=None) > self.delayed_timestamp:
+                elif not data.delayed_queue.empty() and datetime.datetime.now(tz=None) > self.delayed_timestamp:
                     # Don't go through the entire queue right now, coz running sock.sendall consecutively might give error
                     sock.sendall(data.delayed_queue.get())
+
+                else:
+
+                    for message, send_not_ip, send_not_port in self.peer_broadcast_queue:
+                        message_hash = sha256(
+                            message.encode(encoding)).hexdigest()
+                        if not (message_hash in data.hashed_sent):
+                            if not (send_not_ip == data.ip and send_not_port == data.port):
+                                self.printer.print(
+                                    f"Sending block: {message} to {data.ip}:{data.port}", DEBUG_MODE)
+                                data.delayed_queue.put(
+                                    message.encode(encoding))
+                                self.delayed_timestamp = self.get_delayed_timestamp()
+                                data.hashed_sent.append(message_hash)
+
+                    # Flood with bad block
+                    if data.to_flood:
+                        block_string, block_hash = self.miner.mine(
+                            malicious=True)
+                        self.printer.print(
+                            f"Flooding block: {block_string} with hash {block_hash} to {data.ip}:{data.port}", PRINT_FLOODS)
+                        sock.sendall(block_msg.format(
+                            block_string).encode(encoding))
 
         except Exception as e:
             print(str(e))

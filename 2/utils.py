@@ -26,6 +26,7 @@ read_mask = selectors.EVENT_READ
 read_write_mask = selectors.EVENT_READ | selectors.EVENT_WRITE
 DEBUG_MODE = True  # Change to false for submission
 LIVENESS_DEBUG_MODE = False  # Change to false for submission
+PRINT_FLOODS = True  # Change to false for submission
 
 dead_node_msg = "Dead Node:{}:{}:{}:{}~"
 listening_port_msg = "Listening Port:{}~"
@@ -97,7 +98,6 @@ class Blockchain(object):
         if block.level > self.max_level:
             self.max_level = block.level
             self.max_block_hash = block_hash
-        print("added", self.tree)
 
 
 class Miner(object):
@@ -113,12 +113,16 @@ class Miner(object):
         # Returns the value of waiting time
         return datetime.timedelta(seconds=np.random.exponential(1.0/self.node_lambda))
 
-    def mine(self):
+    def mine(self, malicious=False):
         # Generates block. This function is to be called when the waiting time expires
-        timestamp = int(time.time())
         merkel_root = "0"*4
         level = self.blockchain.max_level + 1
-        previous_hash = self.blockchain.max_block_hash
+        if malicious:
+            previous_hash = "0"*4
+            timestamp = np.random.randint(1e10, 1e11-1)
+        else:
+            timestamp = int(time.time())
+            previous_hash = self.blockchain.max_block_hash
         block_string = '_'.join(
             [previous_hash, merkel_root, str(timestamp), str(level)])
         block = Block(block_string)
@@ -186,7 +190,7 @@ class Connection(object):
     When type is PEER, ip and port store the listening socket of the peer
     """
 
-    def __init__(self, socket, ip, port, sock_type, listener_port=None):
+    def __init__(self, socket, ip, port, sock_type, listener_port=None, malicious=-1):
         """Create Connection along with identity"""
         self.socket = socket
         self.ip = ip
@@ -208,6 +212,10 @@ class Connection(object):
         # Height sent by this peer
         self.k = -1
         self.sent_k = True
+        if np.random.random() < malicious:
+            self.to_flood = True
+        else:
+            self.to_flood = False
 
     def pretty(self):
         """Return ip and port info."""
