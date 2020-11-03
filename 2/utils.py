@@ -121,8 +121,8 @@ class Miner(object):
             block_hash = block.previous_hash
         return block_strings[::-1]
 
-    def add_to_pending_queue(self, block):
-        self.pending_queue.put(block)
+    def add_to_pending_queue(self, block, send_not_ip, send_not_port):
+        self.pending_queue.put((block, send_not_ip, send_not_port))
 
     def add_to_tree(self, block):
         if self.blockchain.validate(block):
@@ -131,10 +131,11 @@ class Miner(object):
     def process_pending_queue(self):
         valid_block_strings = []
         while not self.pending_queue.empty():
-            block = self.pending_queue.get()
+            block, send_not_ip, send_not_port = self.pending_queue.get()
             if self.blockchain.validate(block):
                 self.blockchain.add(block)
-                valid_block_strings.append(str(block))
+                valid_block_strings.append(
+                    (str(block), send_not_ip, send_not_port))
         return valid_block_strings
 
 
