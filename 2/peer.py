@@ -28,6 +28,8 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--interarrival_time', type=float, required=True)
 parser.add_argument('--hash_power', type=float, required=True)
 parser.add_argument('--seed', type=int, required=True)
+parser.add_argument('--net_delay', type=float, required=True)
+
 
 class Peer:
     def __init__(self, args):
@@ -57,7 +59,7 @@ class Peer:
 
         # Pending messages that must be broadcasted to all seeds connected with it
         self.seed_broadcast_queue = []
-        
+
         self.message_list = dict()
         self.peer_broadcast_queue = []
 
@@ -65,13 +67,19 @@ class Peer:
         self.printer.print(
             f"Listening on port {self.listening_port}", DEBUG_MODE)
 
-        self.miner = Miner(interarrival_time = args.interarrival_time,
-            percentage_hash_power = args.hash_power, seed = args.seed)
+        self.miner = Miner(interarrival_time=args.interarrival_time,
+                           percentage_hash_power=args.hash_power, seed=args.seed)
         self.mine_timestamp = None
         self.start_mining = False
-        self.synced_with = 0 #Number of peers I have synced the blockchain with
+        self.synced_with = 0  # Number of peers I have synced the blockchain with
         self.mine_delay = None
         self.peer_list_valid = False
+
+        self.net_delay_mean = args.net_delay
+        self.delayed_timestamp = datetime.datetime.now(tz=None)
+
+    def get_delayed_timestamp(self):
+        return datetime.timedelta(seconds=np.random.exponential(self.net_delay_mean)) + datetime.datetime.now(tz=None)
 
     def connect_with_seeds(self):
         # connect to the selected seeds
@@ -97,8 +105,10 @@ class Peer:
             if not self.miner.pending_queue.empty():
                 block_strings = self.miner.process_pending_queue()
                 for block_string in block_strings:
-                    self.peer_broadcast_queue.append((block_msg.format(block_string), None, None))
-                    message_hash = sha256(block_string.encode(encoding)).hexdigest()
+                    self.peer_broadcast_queue.append(
+                        (block_msg.format(block_string), None, None))
+                    message_hash = sha256(
+                        block_string.encode(encoding)).hexdigest()
                     self.message_list[message_hash] = True
                 current_time = datetime.datetime.now(tz=None)
                 self.mine_timestamp = current_time
@@ -107,9 +117,12 @@ class Peer:
             # Block generation and broadcasting
             if self.start_mining and (current_time - self.mine_timestamp) > self.mine_delay:
                 block_string = self.miner.mine()
-                self.printer.print(f"Generated a block: {block_string}", DEBUG_MODE)
-                self.peer_broadcast_queue.append((block_msg.format(block_string), None, None))
-                message_hash = sha256(block_string.encode(encoding)).hexdigest()
+                self.printer.print(
+                    f"Generated a block: {block_string}", DEBUG_MODE)
+                self.peer_broadcast_queue.append(
+                    (block_msg.format(block_string), None, None))
+                message_hash = sha256(
+                    block_string.encode(encoding)).hexdigest()
                 self.message_list[message_hash] = True
                 self.mine_timestamp = current_time
                 self.mine_delay = self.miner.waiting_time()
@@ -141,7 +154,6 @@ class Peer:
         self.sel.register(peer, read_write_mask,
                           data=data)
 
-
     def connect_with_peers(self):
 
         if len(self.received_peer_list) == 0:
@@ -171,7 +183,7 @@ class Peer:
         self.printer.print("sent connection request to all", DEBUG_MODE)
         self.printer.print(
             f"Number of out neighbours: {len(self.peer_list)}", DEBUG_MODE)
-        
+
     def service_seed(self, key, mask):
         """
         Handle all requests to/from seed.
@@ -328,12 +340,13 @@ class Peer:
 
                 # send height info and then send all the blocks
                 if not data.sent_k:
-                    height_message = height_msg.format(self.miner.blockchain.max_level)
+                    height_message = height_msg.format(
+                        self.miner.blockchain.max_level)
                     self.printer.print(
                         f"Sending message {height_message} to {data.ip}:{data.port}", DEBUG_MODE)
                     sock.sendall(height_message.encode(encoding))
                     data.sent_k = True
-                    
+
                     # Syncing my blocks
                     block_strings = self.miner.get_blocks_in_chain()
                     for block_string in block_strings:
@@ -346,8 +359,7 @@ class Peer:
                     self.printer.print(
                         f"Sending {sync_complete_msg} to {data.ip}:{data.port}", DEBUG_MODE)
                     sock.sendall(sync_complete_msg.encode(encoding))
-                    
-                    
+
                 if data.liveness_timestamp is None or current_time-data.liveness_timestamp > datetime.timedelta(seconds=LIVENESS_DELAY):
                     if data.tries_left <= 0:
                         self.handle_dead_peer(sock, data)
@@ -370,8 +382,13 @@ class Peer:
                         if not (send_not_ip == data.ip and send_not_port == data.port):
                             self.printer.print(
                                 f"Sending block: {message} to {data.ip}:{data.port}", DEBUG_MODE)
-                            sock.sendall(message.encode(encoding))
+                            data.delayed_queue.put(message.encode(encoding))
+                            self.delayed_timestamp = self.get_delayed_timestamp()
                             data.hashed_sent.append(message_hash)
+
+                if not data.delayed_queue.empty() and datetime.datetime.now(tz=None) > self.delayed_timestamp:
+                    # Don't go through the entire queue right now, coz running sock.sendall consecutively might give error
+                    sock.sendall(data.delayed_queue.get())
 
         except Exception as e:
             print(str(e))

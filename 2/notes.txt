@@ -1,0 +1,25 @@
+# On seed node
+$ python seed.py --ip <ip_of_seed> --port <port_of_seed>
+
+# On peer node, config.txt must be in the same directory
+$ python3 peer.py --hash_power 50 --interarrival_time 2 --seed 2 --net_delay 0.1
+
+Here, hash_power is in percentage, interarrival_time is the global effective interarrival_time, seed denotes the random seed
+
+# Clarifications
+1. When a new peer joins the network, it syncs with all the peers connected to it and asks them for their longest chain. Then it selects the longest chain amongst those shared by the peers as its chain and mines on that.
+
+Majority part of the assignment is done. Precisely, all the part of the assignment before block flooding attack is done. Following things are left :-
+
+1. The correction in Assignment 1 where we had to ensure dead node message after some time of Ctrl+C
+2. Storing blocks in database, I have only stored them in RAM
+3. Simulating network delays (one easy way would be to store timestamp while generating message and wait for a delay before sending it, ask Bhoyar)
+4. Block flooding attack (malicious peer)
+5. Experimentation and plots
+6. Plotting blockchain tree using graphics tool.
+
+
+Service peer line 377
+Should there be a break in the if part to avoid using sock.sendall consecutively twice
+
+Netwoek delay uses a Queue in each connection so delay is random but blocks will alwyas go in order

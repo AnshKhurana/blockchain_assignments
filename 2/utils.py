@@ -22,8 +22,8 @@ from queue import Queue
 MAX_TRIES = 3  # maximum 3 timeouts for liveness testing
 read_mask = selectors.EVENT_READ
 read_write_mask = selectors.EVENT_READ | selectors.EVENT_WRITE
-DEBUG_MODE = True # Change to false for submission
-LIVENESS_DEBUG_MODE = False # Change to false for submission
+DEBUG_MODE = True  # Change to false for submission
+LIVENESS_DEBUG_MODE = False  # Change to false for submission
 
 dead_node_msg = "Dead Node:{}:{}:{}:{}~"
 listening_port_msg = "Listening Port:{}~"
@@ -33,15 +33,19 @@ block_msg = "{}~"
 height_msg = "Height:{}~"
 sync_complete_msg = "Sync Complete~"
 
+
 def find_sha3(message):
     hasher = hashlib.sha3_256()
     hasher.update(message.encode('utf-8'))
     return hasher.hexdigest()[-4:]
 
+
 class Block(object):
     """ Class to handle one block """
+
     def __init__(self, block_string):
-        [self.previous_hash, self.merkel_root, self.timestamp, self.level] = block_string.split('_')
+        [self.previous_hash, self.merkel_root, self.timestamp, self.level] = block_string.split(
+            '_')  # he might take objection on giving self.level as argument to block
         self.level = int(self.level)
 
     def __str__(self):
@@ -49,18 +53,21 @@ class Block(object):
 
     def sha3(self):
         # Don't include self.level while generating hash of block
-        block_string = ''.join([self.previous_hash, self.merkel_root, self.timestamp])
+        block_string = ''.join(
+            [self.previous_hash, self.merkel_root, self.timestamp])
         return find_sha3(block_string)
+
 
 class Blockchain(object):
     """ Class to handle blockchain structure """
+
     def __init__(self):
         self.tree = {}
         self.max_level = 0
         self.genesis_hash = "9e1c"
         # block to mine on
         self.max_block_hash = self.genesis_hash
-        
+
     def validate(self, block):
         block_time = int(block.timestamp)
         if block.previous_hash not in self.tree and block.previous_hash != self.genesis_hash:
@@ -79,12 +86,14 @@ class Blockchain(object):
             self.max_level = block.level
             self.max_block_hash = block_hash
 
+
 class Miner(object):
     """ Class to handle the mining roles of a peer """
+
     def __init__(self, interarrival_time, percentage_hash_power, seed):
         self.node_lambda = percentage_hash_power / (100.0*interarrival_time)
         self.blockchain = Blockchain()
-        self.pending_queue = Queue(maxsize = -1)
+        self.pending_queue = Queue(maxsize=-1)
         np.random.seed(seed)
 
     def waiting_time(self):
@@ -97,7 +106,8 @@ class Miner(object):
         merkel_root = "0"*4
         level = self.blockchain.max_level + 1
         previous_hash = self.blockchain.max_block_hash
-        block_string = '_'.join([previous_hash, merkel_root, str(timestamp), str(level)])
+        block_string = '_'.join(
+            [previous_hash, merkel_root, str(timestamp), str(level)])
         block = Block(block_string)
         self.blockchain.add(block)
         return block_string
@@ -105,7 +115,7 @@ class Miner(object):
     def get_blocks_in_chain(self):
         block_strings = []
         block_hash = self.blockchain.max_block_hash
-        while block_hash!= self.blockchain.genesis_hash:
+        while block_hash != self.blockchain.genesis_hash:
             block = self.blockchain.tree[block_hash]
             block_strings.append(str(block))
             block_hash = block.previous_hash
@@ -150,7 +160,7 @@ class Printer(object):
         Writes to screen and to file.
         Use second argument to specify if writing is conditional on debug mode
         """
-        msg = msg.replace('~','')
+        msg = msg.replace('~', '')
         if should_print:
             print(msg)
             self.file_obj.write(msg+"\n")
@@ -179,6 +189,7 @@ class Connection(object):
         self.sent_messages = []
         self.hashed_sent = []
         self.created_at = datetime.datetime.now(tz=None)
+        self.delayed_queue = Queue(maxsize=-1)
 
         # Height sent by this peer
         self.k = -1
