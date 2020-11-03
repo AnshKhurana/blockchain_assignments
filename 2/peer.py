@@ -82,6 +82,8 @@ class Peer:
 
         self.malicious = args.mal  # fraction of nodes to flood. zero if not malicious
 
+        self.prev_msg = ''  # This is needed if while receiving, some msg comes only halfway
+
     def get_delayed_timestamp(self):
         return datetime.timedelta(seconds=np.random.exponential(self.net_delay_mean)) + datetime.datetime.now(tz=None)
 
@@ -242,7 +244,10 @@ class Peer:
 
         messages = message_combined.split('~')
 
-        for message in messages:
+        messages[0] = self.prev_msg+messages[0]
+        self.prev_msg = messages[-1]
+
+        for message in messages[:-1]:
             if message.startswith("Liveness Request"):
                 self.printer.print(
                     f"Received a liveness request from {data.ip}:{data.port}:{message}", LIVENESS_DEBUG_MODE)
@@ -367,6 +372,7 @@ class Peer:
                     sock.sendall(sync_complete_msg.encode(encoding))
 
                 elif data.liveness_timestamp is None or current_time-data.liveness_timestamp > datetime.timedelta(seconds=LIVENESS_DELAY):
+
                     if data.tries_left <= 0:
                         self.handle_dead_peer(sock, data)
                     else:
@@ -387,7 +393,6 @@ class Peer:
                     sock.sendall(data.delayed_queue.get())
 
                 else:
-
                     for message, send_not_ip, send_not_port in self.peer_broadcast_queue:
                         message_hash = sha256(
                             message.encode(encoding)).hexdigest()
