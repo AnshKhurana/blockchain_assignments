@@ -244,6 +244,8 @@ class Peer:
 
         messages = message_combined.split('~')
 
+        # This part helps to deal with messages that get cut in half due to socket limits
+        # this now happens with high probabilty due to flooding
         messages[0] = self.prev_msg+messages[0]
         self.prev_msg = messages[-1]
 
@@ -411,8 +413,11 @@ class Peer:
                             malicious=True)
                         self.printer.print(
                             f"Flooding block: {block_string} with hash {block_hash} to {data.ip}:{data.port}", PRINT_FLOODS)
-                        sock.sendall(block_msg.format(
-                            block_string).encode(encoding))
+                        try:
+                            data.delayed_queue.put(block_msg.format(
+                                block_string).encode(encoding), block=False)
+                        except:
+                            pass
 
         except Exception as e:
             print(str(e))

@@ -207,7 +207,7 @@ class Connection(object):
         self.sent_messages = []
         self.hashed_sent = []
         self.created_at = datetime.datetime.now(tz=None)
-        self.delayed_queue = Queue(maxsize=-1)
+        self.delayed_queue = Queue(maxsize=10000)
 
         # Height sent by this peer
         self.k = -1
