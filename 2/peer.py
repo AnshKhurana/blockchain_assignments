@@ -30,7 +30,7 @@ parser.add_argument('--hash_power', type=float, required=True)
 parser.add_argument('--seed', type=int, required=True)
 parser.add_argument('--net_delay', type=float, required=True)
 parser.add_argument('--draw', action='store_true')
-parser.add_argument('--mal', type=float, default=-1)
+parser.add_argument('--mal', type=str, default=None)
 
 
 class Peer:
@@ -80,7 +80,17 @@ class Peer:
         self.net_delay_mean = args.net_delay
         self.delayed_timestamp = datetime.datetime.now(tz=None)
 
-        self.malicious = args.mal  # fraction of nodes to flood. zero if not malicious
+        if args.mal:
+            file = open(args.mal, 'r')
+            peers = file.readlines()
+            peer_info = []
+            for peer in peers:
+                ip = peer.split(':')[0]
+                port = int(peer.split(':')[1].replace('\n', ''))
+                peer_info.append((ip, port))
+            self.peers_to_flood = peer_info
+        else:
+            self.peers_to_flood = []
 
         self.prev_msg = ''  # This is needed if while receiving, some msg comes only halfway
 
@@ -153,7 +163,7 @@ class Peer:
             f"Received connection from {peer_ip}:{peer_port}", DEBUG_MODE)
         peer.setblocking(False)
         data = Connection(peer, peer_ip, peer_port,
-                          socket_type.PEER, malicious=self.malicious)
+                          socket_type.PEER)
         data.sent_k = False
         for message, _, _ in self.peer_broadcast_queue:
             message_hash = sha256(message.encode(encoding)).hexdigest()
@@ -184,8 +194,14 @@ class Peer:
                 self.printer.print(
                     f"Failed to connect to {ip}:{port}", DEBUG_MODE)
             else:
+                if (ip, port) in self.peers_to_flood:
+                    data = Connection(s, ip, port, sock_type=socket_type.PEER,
+                                      listener_port=port, to_flood=True)
+                else:
+                    data = Connection(s, ip, port, sock_type=socket_type.PEER,
+                                      listener_port=port)
                 self.sel.register(s, read_write_mask,
-                                  data=Connection(s, ip, port, sock_type=socket_type.PEER, listener_port=port, malicious=self.malicious))
+                                  data=data)
 
         self.printer.print("sent connection request to all", DEBUG_MODE)
         self.printer.print(

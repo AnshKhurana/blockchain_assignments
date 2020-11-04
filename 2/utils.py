@@ -190,7 +190,7 @@ class Connection(object):
     When type is PEER, ip and port store the listening socket of the peer
     """
 
-    def __init__(self, socket, ip, port, sock_type, listener_port=None, malicious=-1):
+    def __init__(self, socket, ip, port, sock_type, listener_port=None, to_flood=False):
         """Create Connection along with identity"""
         self.socket = socket
         self.ip = ip
@@ -212,10 +212,7 @@ class Connection(object):
         # Height sent by this peer
         self.k = -1
         self.sent_k = True
-        if np.random.random() < malicious:
-            self.to_flood = True
-        else:
-            self.to_flood = False
+        self.to_flood = to_flood
 
     def pretty(self):
         """Return ip and port info."""
