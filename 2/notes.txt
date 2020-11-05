@@ -2,7 +2,7 @@
 $ python seed.py --ip <ip_of_seed> --port <port_of_seed>
 
 # On peer node, config.txt must be in the same directory
-$ python3 peer.py --hash_power 50 --interarrival_time 2 --seed 2 --net_delay 0.1 --draw --mal mal_peers.txt
+$ python3 peer.py --hash_power 50 --interarrival_time 2 --seed 2 --net_delay 3 --draw --mal mal_peers.txt
 
 Here, hash_power is in percentage, interarrival_time is the global effective interarrival_time, seed denotes the random seed. net_delay is the mean of the random delay introduced. --draw tells to draw the tree. --mal means the peer is malicious. The number followed is fraction of connected peers to flood
 
