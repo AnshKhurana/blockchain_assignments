@@ -95,7 +95,7 @@ class Peer:
         self.prev_msg = ''  # This is needed if while receiving, some msg comes only halfway
 
     def get_delayed_timestamp(self):
-        return datetime.timedelta(seconds=np.random.exponential(self.net_delay_mean)) + datetime.datetime.now(tz=None)
+        return datetime.timedelta(seconds=self.net_delay_mean) + datetime.datetime.now(tz=None)
 
     def connect_with_seeds(self):
         # connect to the selected seeds
@@ -406,9 +406,10 @@ class Peer:
                         data.liveness_timestamp = current_time
                         data.tries_left -= 1
 
-                elif not data.delayed_queue.empty() and datetime.datetime.now(tz=None) > self.delayed_timestamp:
-                    # Don't go through the entire queue right now, coz running sock.sendall consecutively might give error
-                    sock.sendall(data.delayed_queue.get())
+                elif len(data.delayed_queue) > 0 and datetime.datetime.now(tz=None) > data.delayed_queue[0][1]:
+                    sock.sendall(data.delayed_queue[0][0])
+                    data.delayed_queue.pop(0)
+                    print(data.delayed_queue)
 
                 else:
                     for message, send_not_ip, send_not_port in self.peer_broadcast_queue:
@@ -418,9 +419,8 @@ class Peer:
                             if not (send_not_ip == data.ip and send_not_port == data.port):
                                 self.printer.print(
                                     f"Sending block: {message} to {data.ip}:{data.port}", DEBUG_MODE)
-                                data.delayed_queue.put(
-                                    message.encode(encoding))
-                                self.delayed_timestamp = self.get_delayed_timestamp()
+                                data.delayed_queue.append(
+                                    (message.encode(encoding), self.get_delayed_timestamp()))
                                 data.hashed_sent.append(message_hash)
 
                     # Flood with bad block
@@ -429,11 +429,10 @@ class Peer:
                             malicious=True)
                         self.printer.print(
                             f"Flooding block: {block_string} with hash {block_hash} to {data.ip}:{data.port}", PRINT_FLOODS)
-                        try:
-                            data.delayed_queue.put(block_msg.format(
-                                block_string).encode(encoding), block=False)
-                        except:
-                            pass
+                        # We don't want to fill our own RAM while flooding
+                        if len(data.delayed_queue) < 1e6:
+                            data.delayed_queue.append((block_msg.format(
+                                block_string).encode(encoding), self.get_delayed_timestamp()))
 
         except Exception as e:
             print(str(e))
