@@ -31,13 +31,22 @@ parser.add_argument('--hash_power', type=float, required=True)
 parser.add_argument('--net_delay', type=float, required=True)
 parser.add_argument('--draw', action='store_true')
 parser.add_argument('--logdir', type=str, help='path to save all experiment related files', default='./log')
-parser.add_argument('--mal', type=str, default=None)
+parser.add_argument('--mal', action='store_true')
+parser.add_argument('--victim', action='store_true')
 
 
 
 class Peer:
     def __init__(self, args):
         super().__init__()
+
+        self.is_mal = args.mal
+        self.is_victim = args.victim
+        self.info_file = os.path.join(args.logdir, 'victim_nodes.output')
+        if self.is_victim and self.is_mal:
+            raise ValueError("Cannot be both attacker and victim at the same time")
+
+        
 
         seeds = findSeeds()
         N = len(seeds)
@@ -67,14 +76,16 @@ class Peer:
         self.message_list = dict()
         self.peer_broadcast_queue = []
 
-        self.printer = Printer('PEER', args.logdir)
+
+        self.printer = Printer('PEER', args.logdir, self.is_mal)
         self.printer.print(
             f"Listening on port {self.listening_port}", DEBUG_MODE)
 
         self.miner = Miner(interarrival_time=args.interarrival_time, 
                             percentage_hash_power=args.hash_power,
                             draw=args.draw, 
-                            logfolder=args.logdir)
+                            logfolder=args.logdir,
+                            is_mal=self.is_mal)
 
         self.mine_timestamp = None
         self.start_mining = False
@@ -85,15 +96,25 @@ class Peer:
         self.net_delay_mean = args.net_delay
         self.delayed_timestamp = datetime.datetime.now(tz=None)
 
-        if args.mal:
-            file = open(args.mal, 'r')
-            peers = file.readlines()
-            peer_info = []
-            for peer in peers:
-                ip = peer.split(':')[0]
-                port = int(peer.split(':')[1].replace('\n', ''))
-                peer_info.append((ip, port))
-            self.peers_to_flood = peer_info
+        # if you're a victim, write information for the attacker
+        if self.is_victim:
+            with open(self.info_file, 'a+') as file:
+                file.write(":".join([str(self.ip), str(self.listening_port)]) + '\n')
+
+        # if you're an attacker, mark nodes to flood
+        if self.is_mal:
+            try:
+                with open(self.info_file, 'r') as file:
+                    peers = file.readlines()
+                    peer_info = []
+                    for peer in peers:
+                        ip = peer.split(':')[0]
+                        port = int(peer.split(':')[1].replace('\n', ''))
+                        peer_info.append((ip, port))
+                    self.peers_to_flood = peer_info
+            except:
+                self.peers_to_flood = []
+                self.printer.print(f"No peers to flood.", DEBUG_MODE)
         else:
             self.peers_to_flood = []
 

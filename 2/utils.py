@@ -64,8 +64,9 @@ class Block(object):
 class Blockchain(object):
     """ Class to handle blockchain structure """
 
-    def __init__(self, draw, logfolder=None):
+    def __init__(self, draw, logfolder=None, is_mal=False):
         self.tree = {}
+        self.is_mal = is_mal
         self.max_level = 0
         self.genesis_hash = "9e1c"
         self.my_block_hashs = set()
@@ -73,13 +74,22 @@ class Blockchain(object):
         self.draw=draw
         self.max_block_hash = self.genesis_hash
         self.filename = None
-        self.db_name = "BLOCK_DB_"+str(os.getpid())+".txt"
+        
+        if self.is_mal:
+            self.db_name = "MAL_BLOCK_DB_"+str(os.getpid())+".output"
+        else:
+            self.db_name = "BLOCK_DB_"+str(os.getpid())+".output"
+        
         if logfolder:
             self.db_name = os.path.join(logfolder, self.db_name)
-        self.db_obj =open(self.db_name, "a+")
+        
+        self.db_obj =open(self.db_name, "w")
 
         if draw:
-            self.filename = "CHAIN_"+str(os.getpid())+".png"
+            if self.is_mal:
+                self.filename = "MAL_CHAIN_"+str(os.getpid())+".png"
+            else:
+                self.filename = "CHAIN_"+str(os.getpid())+".png"
             if logfolder:
                 self.filename = os.path.join(logfolder, self.filename)
             
@@ -118,7 +128,6 @@ class Blockchain(object):
             plt.clf()
             self.chain.add_edge(str(block.previous_hash), str(block_hash))
             nx.draw(self.chain, with_labels=True)
-            
             plt.savefig(self.filename)
 
         if block.level > self.max_level:
@@ -132,12 +141,15 @@ class Blockchain(object):
         self.my_block_hashs.add(block_hash)
 
 
+    # def __del__(self):
+    #     self.db_obj.close()
+
 class Miner(object):
     """ Class to handle the mining roles of a peer """
 
-    def __init__(self, interarrival_time, percentage_hash_power, draw, logfolder):
+    def __init__(self, interarrival_time, percentage_hash_power, draw, logfolder, is_mal):
         self.node_lambda = percentage_hash_power / (100.0*interarrival_time)
-        self.blockchain = Blockchain(draw, logfolder)
+        self.blockchain = Blockchain(draw, logfolder, is_mal)
         self.pending_queue = Queue(maxsize=-1)
         # np.random.seed(seed)
 
@@ -205,12 +217,15 @@ class socket_type(Enum):
 class Printer(object):
     """Class to handle printing to screen and file."""
 
-    def __init__(self, seed_or_peer, logfolder=None):
+    def __init__(self, seed_or_peer, logfolder=None, is_mal=False):
         """Print to a file named <pid>.output."""
         if seed_or_peer == 'SEED':
             filename = "SEED_"+str(os.getpid())+".output"
         else:
-            filename = "PEER_"+str(os.getpid())+".output"
+            if is_mal:
+                filename = "MAL_PEER_"+str(os.getpid())+".output"
+            else:
+                filename = "PEER_"+str(os.getpid())+".output"
 
         if logfolder:
             filename = os.path.join(logfolder, filename)
@@ -227,6 +242,8 @@ class Printer(object):
             print(msg)
             self.file_obj.write(msg+"\n")
 
+    # def __del__(self):
+    #     self.file_obj.close()
 
 class Connection(object):
     """
