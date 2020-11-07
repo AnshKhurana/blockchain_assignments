@@ -30,7 +30,9 @@ parser.add_argument('--hash_power', type=float, required=True)
 # parser.add_argument('--seed', type=int, required=True)
 parser.add_argument('--net_delay', type=float, required=True)
 parser.add_argument('--draw', action='store_true')
+parser.add_argument('--logdir', type=str, default='./log')
 parser.add_argument('--mal', type=str, default=None)
+
 
 
 class Peer:
@@ -65,12 +67,15 @@ class Peer:
         self.message_list = dict()
         self.peer_broadcast_queue = []
 
-        self.printer = Printer('PEER')
+        self.printer = Printer('PEER', args.logdir)
         self.printer.print(
             f"Listening on port {self.listening_port}", DEBUG_MODE)
 
-        self.miner = Miner(interarrival_time=args.interarrival_time,
-                           percentage_hash_power=args.hash_power, draw=args.draw)
+        self.miner = Miner(interarrival_time=args.interarrival_time, 
+                            percentage_hash_power=args.hash_power,
+                            draw=args.draw, 
+                            logfolder=args.logdir)
+
         self.mine_timestamp = None
         self.start_mining = False
         self.synced_with = 0  # Number of peers I have synced the blockchain with
@@ -446,6 +451,10 @@ class Peer:
 
 if __name__ == "__main__":
     args = parser.parse_args()
+    
+    # create log dir
+    check_and_make_dir(args.logdir)
+
     p = Peer(args)
     p.connect_with_seeds()
     p.run()

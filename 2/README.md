@@ -5,7 +5,7 @@ Assignment solved by Onkar Deshpande, Kushagra Juneja, Ansh Khurana
 $ python seed.py --ip <ip_of_seed> --port <port_of_seed>
 
 # On peer node, config.txt must be in the same directory
-$ python3 peer.py --hash_power 50 --interarrival_time 2 --seed 2
+$ python3 peer.py --hash_power 50 --interarrival_time 2
 
 Here, hash_power is in percentage, interarrival_time is the global effective interarrival_time, seed denotes the random seed
 

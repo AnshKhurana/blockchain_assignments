@@ -64,7 +64,7 @@ class Block(object):
 class Blockchain(object):
     """ Class to handle blockchain structure """
 
-    def __init__(self, draw):
+    def __init__(self, draw, logfolder):
         self.tree = {}
         self.max_level = 0
         self.genesis_hash = "9e1c"
@@ -73,7 +73,10 @@ class Blockchain(object):
         self.max_block_hash = self.genesis_hash
         self.filename = None
         if draw:
+
             self.filename = "CHAIN_"+str(os.getpid())+".png"
+            if logfolder:
+                self.filename = os.path.join(self.filename)
             self.chain = nx.Graph()
 
     def validate(self, block):
@@ -100,6 +103,7 @@ class Blockchain(object):
             self.max_level = block.level
             self.max_block_hash = block_hash
 
+        
     def mark_my_own(self, block):
         block_hash = block.sha3()
         self.my_block_hashs.add(block_hash)
@@ -108,9 +112,9 @@ class Blockchain(object):
 class Miner(object):
     """ Class to handle the mining roles of a peer """
 
-    def __init__(self, interarrival_time, percentage_hash_power, draw):
+    def __init__(self, interarrival_time, percentage_hash_power, draw, logfolder):
         self.node_lambda = percentage_hash_power / (100.0*interarrival_time)
-        self.blockchain = Blockchain(draw)
+        self.blockchain = Blockchain(draw, logfolder)
         self.pending_queue = Queue(maxsize=-1)
         # np.random.seed(seed)
 
@@ -175,12 +179,16 @@ class socket_type(Enum):
 class Printer(object):
     """Class to handle printing to screen and file."""
 
-    def __init__(self, seed_or_peer):
+    def __init__(self, seed_or_peer, logfolder=None):
         """Print to a file named <pid>.output."""
         if seed_or_peer == 'SEED':
             filename = "SEED_"+str(os.getpid())+".output"
         else:
             filename = "PEER_"+str(os.getpid())+".output"
+
+        if logfolder:
+            filename = os.path.join(logfolder, filename)
+
         self.file_obj = open(filename, "w")
 
     def print(self, msg, should_print=True):
@@ -245,3 +253,7 @@ def getUnique(peers):
     """Remove duplicate from a list of peers."""
     peers = [(peer[0], peer[1]) for peer in peers]
     return list(set(peers))
+
+def check_and_make_dir(folder):
+    if not os.path.exists(folder):
+        os.makedirs(folder)
