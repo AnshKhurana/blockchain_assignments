@@ -27,7 +27,7 @@ LIVENESS_DELAY = 13  # 13 seconds for each message
 parser = argparse.ArgumentParser()
 parser.add_argument('--interarrival_time', type=float, required=True)
 parser.add_argument('--hash_power', type=float, required=True)
-parser.add_argument('--seed', type=int, required=True)
+# parser.add_argument('--seed', type=int, required=True)
 parser.add_argument('--net_delay', type=float, required=True)
 parser.add_argument('--draw', action='store_true')
 parser.add_argument('--mal', type=str, default=None)
@@ -70,7 +70,7 @@ class Peer:
             f"Listening on port {self.listening_port}", DEBUG_MODE)
 
         self.miner = Miner(interarrival_time=args.interarrival_time,
-                           percentage_hash_power=args.hash_power, seed=args.seed, draw=args.draw)
+                           percentage_hash_power=args.hash_power, draw=args.draw)
         self.mine_timestamp = None
         self.start_mining = False
         self.synced_with = 0  # Number of peers I have synced the blockchain with

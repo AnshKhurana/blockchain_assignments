@@ -68,6 +68,7 @@ class Blockchain(object):
         self.tree = {}
         self.max_level = 0
         self.genesis_hash = "9e1c"
+        self.my_block_hashs = set()
         # block to mine on
         self.max_block_hash = self.genesis_hash
         self.filename = None
@@ -99,15 +100,19 @@ class Blockchain(object):
             self.max_level = block.level
             self.max_block_hash = block_hash
 
+    def mark_my_own(self, block):
+        block_hash = block.sha3()
+        self.my_block_hashs.add(block_hash)
+
 
 class Miner(object):
     """ Class to handle the mining roles of a peer """
 
-    def __init__(self, interarrival_time, percentage_hash_power, seed, draw):
+    def __init__(self, interarrival_time, percentage_hash_power, draw):
         self.node_lambda = percentage_hash_power / (100.0*interarrival_time)
         self.blockchain = Blockchain(draw)
         self.pending_queue = Queue(maxsize=-1)
-        np.random.seed(seed)
+        # np.random.seed(seed)
 
     def waiting_time(self):
         # Returns the value of waiting time
@@ -127,6 +132,11 @@ class Miner(object):
             [previous_hash, merkel_root, str(timestamp), str(level)])
         block = Block(block_string)
         self.blockchain.add(block)
+
+        # adding blocks that are my own
+        if not malicious:
+            self.blockchain.mark_my_own(block)
+
         return block_string, block.sha3()
 
     def get_blocks_in_chain(self):
