@@ -64,19 +64,25 @@ class Block(object):
 class Blockchain(object):
     """ Class to handle blockchain structure """
 
-    def __init__(self, draw, logfolder):
+    def __init__(self, draw, logfolder=None):
         self.tree = {}
         self.max_level = 0
         self.genesis_hash = "9e1c"
         self.my_block_hashs = set()
         # block to mine on
+        self.draw=draw
         self.max_block_hash = self.genesis_hash
         self.filename = None
-        if draw:
+        self.db_name = "BLOCK_DB_"+str(os.getpid())+".txt"
+        if logfolder:
+            self.db_name = os.path.join(logfolder, self.db_name)
+        self.db_obj =open(self.db_name, "a+")
 
+        if draw:
             self.filename = "CHAIN_"+str(os.getpid())+".png"
             if logfolder:
-                self.filename = os.path.join(self.filename)
+                self.filename = os.path.join(logfolder, self.filename)
+            
             self.chain = nx.Graph()
 
     def validate(self, block):
@@ -85,24 +91,41 @@ class Blockchain(object):
             return False
         elif time.time() > block_time + 3600 or time.time() < block_time - 3600:
             return False
+        elif (block.previous_hash == self.genesis_hash and block.level != 1) or (block.previous_hash != self.genesis_hash and block.level != self.tree[block.previous_hash].level+1): # additional level based check
+            return False
         else:
             return True
 
+    def update_db(self, block):
+        block_hash = block.sha3()
+        is_mine = block_hash in self.my_block_hashs
+        mine_string = "generated" if is_mine else "received"
+        block_string = str(block)
+        line_to_write = '_'.join([block_hash, block_string, mine_string])
+        self.db_obj.write(line_to_write+'\n')
+
     def add(self, block):
+        
+        if not self.validate(block):
+            return
+    
         block_hash = block.sha3()
         if block_hash in self.tree:
             return
         self.tree[block_hash] = block
-        if self.filename:
+        
+        if self.draw:
             plt.clf()
             self.chain.add_edge(str(block.previous_hash), str(block_hash))
             nx.draw(self.chain, with_labels=True)
+            
             plt.savefig(self.filename)
 
         if block.level > self.max_level:
             self.max_level = block.level
             self.max_block_hash = block_hash
 
+        self.update_db(block)
         
     def mark_my_own(self, block):
         block_hash = block.sha3()
@@ -135,11 +158,14 @@ class Miner(object):
         block_string = '_'.join(
             [previous_hash, merkel_root, str(timestamp), str(level)])
         block = Block(block_string)
+        
+        if not malicious:
+            self.blockchain.mark_my_own(block)
+        
         self.blockchain.add(block)
 
         # adding blocks that are my own
-        if not malicious:
-            self.blockchain.mark_my_own(block)
+        
 
         return block_string, block.sha3()
 

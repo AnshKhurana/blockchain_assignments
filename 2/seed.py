@@ -19,10 +19,11 @@ parser.add_argument('--ip', help='ip address its running on',
                     type=str, required=True)
 parser.add_argument(
     '--port', help='port number its running on', type=int, required=True)
+parser.add_argument('--logdir', type=str, help='path to save all experiment related files', default='./log')
 
 
 class Seed:
-    def __init__(self, ip, port):
+    def __init__(self, ip, port, logdir):
         super().__init__()
         self.ip = ip
         self.port = port
@@ -30,7 +31,7 @@ class Seed:
         self.sel = selectors.DefaultSelector()
         self.dead_peers = []
 
-        self.printer = Printer('SEED')
+        self.printer = Printer('SEED', logfolder=logdir)
 
     def run(self):
         # set-up listening socket for selector
@@ -147,5 +148,6 @@ class Seed:
 
 if __name__ == "__main__":
     args = parser.parse_args()
-    s = Seed(args.ip, args.port)
+    check_and_make_dir(args.logdir)
+    s = Seed(args.ip, args.port, args.logdir)
     s.run()

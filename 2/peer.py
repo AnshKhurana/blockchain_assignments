@@ -30,7 +30,7 @@ parser.add_argument('--hash_power', type=float, required=True)
 # parser.add_argument('--seed', type=int, required=True)
 parser.add_argument('--net_delay', type=float, required=True)
 parser.add_argument('--draw', action='store_true')
-parser.add_argument('--logdir', type=str, default='./log')
+parser.add_argument('--logdir', type=str, help='path to save all experiment related files', default='./log')
 parser.add_argument('--mal', type=str, default=None)
 
 
