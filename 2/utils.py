@@ -49,6 +49,7 @@ class Block(object):
     def __init__(self, block_string):
         [self.previous_hash, self.merkel_root, self.timestamp, self.level] = block_string.split(
             '_')  # he might take objection on giving self.level as argument to block
+
         self.level = int(self.level)
 
     def __str__(self):

@@ -223,7 +223,7 @@ class Peer:
                     f"Failed to connect to {ip}:{port}", DEBUG_MODE)
             else:
                 self.printer.print(
-                    f"checking {ip}:{port} in {self.peers_to_flood}")
+                    f"checking {ip}:{port} in {self.peers_to_flood}", DEBUG_MODE)
                 if (ip, port) in self.peers_to_flood:
                     data = Connection(s, ip, port, sock_type=socket_type.PEER,
                                       listener_port=port, to_flood=True)
@@ -331,21 +331,24 @@ class Peer:
             elif message == '':
                 continue
             else:
-                message_hash = sha256(message.encode(encoding)).hexdigest()
+                try:
+                    message_hash = sha256(message.encode(encoding)).hexdigest()
 
-                if message_hash in self.message_list.keys():
-                    self.printer.print(
-                        f"Received stale block {message} from {data.ip}:{data.port}.", DEBUG_MODE)
-                else:
-                    self.message_list[message_hash] = True
-                    block = Block(message)
-                    self.printer.print(
-                        f"Received new block: {message} with hash {block.sha3()} from {data.ip}:{data.port} at {datetime.datetime.now(tz=None)}")
-                    if block.level >= data.k:
-                        self.miner.add_to_pending_queue(
-                            block, data.ip, data.port)
+                    if message_hash in self.message_list.keys():
+                        self.printer.print(
+                            f"Received stale block {message} from {data.ip}:{data.port}.", DEBUG_MODE)
                     else:
-                        self.miner.add_to_tree(block)
+                        self.message_list[message_hash] = True
+                        block = Block(message)
+                        self.printer.print(
+                            f"Received new block: {message} with hash {block.sha3()} from {data.ip}:{data.port} at {datetime.datetime.now(tz=None)}", DEBUG_MODE)
+                        if block.level >= data.k:
+                            self.miner.add_to_pending_queue(
+                                block, data.ip, data.port)
+                        else:
+                            self.miner.add_to_tree(block)
+                except:
+                    pass
 
     def handle_dead_peer(self, sock, data):
         current_time = datetime.datetime.now(tz=None)
