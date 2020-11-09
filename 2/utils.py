@@ -128,9 +128,15 @@ class Blockchain(object):
         if self.draw:
             plt.clf()
             self.chain.add_edge(str(block.previous_hash), str(block_hash))
-            pos = nx.spiral_layout(self.chain)
+            pos = nx.spectral_layout(self.chain)
+            # pos = nx.spiral_layout(self.chain)
+            # pos = nx.shell_layout(self.chain)
             nx.draw_networkx_nodes(self.chain, pos)
+            nx.draw_networkx_nodes(self.chain, pos, nodelist=[
+                                   "9e1c"], node_color="red")
+            # nx.draw_networkx_labels(self.chain, pos)
             nx.draw_networkx_edges(self.chain, pos)
+            # nx.draw(self.chain, with_labels=True)
             plt.savefig(self.filename)
 
         if block.level > self.max_level:
