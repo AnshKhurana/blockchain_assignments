@@ -71,19 +71,19 @@ class Blockchain(object):
         self.genesis_hash = "9e1c"
         self.my_block_hashs = set()
         # block to mine on
-        self.draw=draw
+        self.draw = draw
         self.max_block_hash = self.genesis_hash
         self.filename = None
-        
+
         if self.is_mal:
             self.db_name = "MAL_BLOCK_DB_"+str(os.getpid())+".output"
         else:
             self.db_name = "BLOCK_DB_"+str(os.getpid())+".output"
-        
+
         if logfolder:
             self.db_name = os.path.join(logfolder, self.db_name)
-        
-        self.db_obj =open(self.db_name, "w")
+
+        self.db_obj = open(self.db_name, "w")
 
         if draw:
             if self.is_mal:
@@ -92,7 +92,7 @@ class Blockchain(object):
                 self.filename = "CHAIN_"+str(os.getpid())+".png"
             if logfolder:
                 self.filename = os.path.join(logfolder, self.filename)
-            
+
             self.chain = nx.Graph()
 
     def validate(self, block):
@@ -101,7 +101,8 @@ class Blockchain(object):
             return False
         elif time.time() > block_time + 3600 or time.time() < block_time - 3600:
             return False
-        elif (block.previous_hash == self.genesis_hash and block.level != 1) or (block.previous_hash != self.genesis_hash and block.level != self.tree[block.previous_hash].level+1): # additional level based check
+        # additional level based check
+        elif (block.previous_hash == self.genesis_hash and block.level != 1) or (block.previous_hash != self.genesis_hash and block.level != self.tree[block.previous_hash].level+1):
             return False
         else:
             return True
@@ -115,19 +116,21 @@ class Blockchain(object):
         self.db_obj.write(line_to_write+'\n')
 
     def add(self, block):
-        
+
         if not self.validate(block):
             return
-    
+
         block_hash = block.sha3()
         if block_hash in self.tree:
             return
         self.tree[block_hash] = block
-        
+
         if self.draw:
             plt.clf()
             self.chain.add_edge(str(block.previous_hash), str(block_hash))
-            nx.draw(self.chain, with_labels=True)
+            pos = nx.spiral_layout(self.chain)
+            nx.draw_networkx_nodes(self.chain, pos)
+            nx.draw_networkx_edges(self.chain, pos)
             plt.savefig(self.filename)
 
         if block.level > self.max_level:
@@ -135,14 +138,14 @@ class Blockchain(object):
             self.max_block_hash = block_hash
 
         self.update_db(block)
-        
+
     def mark_my_own(self, block):
         block_hash = block.sha3()
         self.my_block_hashs.add(block_hash)
 
-
     # def __del__(self):
     #     self.db_obj.close()
+
 
 class Miner(object):
     """ Class to handle the mining roles of a peer """
@@ -170,14 +173,13 @@ class Miner(object):
         block_string = '_'.join(
             [previous_hash, merkel_root, str(timestamp), str(level)])
         block = Block(block_string)
-        
+
         if not malicious:
             self.blockchain.mark_my_own(block)
-        
+
         self.blockchain.add(block)
 
         # adding blocks that are my own
-        
 
         return block_string, block.sha3()
 
@@ -245,6 +247,7 @@ class Printer(object):
     # def __del__(self):
     #     self.file_obj.close()
 
+
 class Connection(object):
     """
     Class to handle socket storage and interaction.
@@ -296,6 +299,7 @@ def getUnique(peers):
     """Remove duplicate from a list of peers."""
     peers = [(peer[0], peer[1]) for peer in peers]
     return list(set(peers))
+
 
 def check_and_make_dir(folder):
     if not os.path.exists(folder):
