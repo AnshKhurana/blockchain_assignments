@@ -28,3 +28,5 @@ Need to check if all randomness is seeded
  There may be extraneous print statements that dont follow debug_mode
 
 Maybe we should remove "Recieved block..." wala print statement coz during flooding, it prints a lot
+
+Self.ip is always 0.0.0.0. This caused an error since the victim added that to victim.output. changed victim to always add "127.0.0.1" to victim.output. This means multiple laptops not allowed

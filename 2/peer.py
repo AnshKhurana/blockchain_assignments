@@ -98,7 +98,7 @@ class Peer:
         if self.is_victim:
             with open(self.info_file, 'a+') as file:
                 file.write(
-                    ":".join([str(self.ip), str(self.listening_port)]) + '\n')
+                    ":".join(["127.0.0.1", str(self.listening_port)]) + '\n')
 
         # if you're an attacker, mark nodes to flood
         if self.is_mal:
@@ -116,6 +116,9 @@ class Peer:
                 self.printer.print(f"No peers to flood.", DEBUG_MODE)
         else:
             self.peers_to_flood = []
+
+        self.printer.print(
+            f"peers_to_flood are {self.peers_to_flood}", DEBUG_MODE)
 
         self.prev_msg = ''  # This is needed if while receiving, some msg comes only halfway
 
@@ -219,6 +222,8 @@ class Peer:
                 self.printer.print(
                     f"Failed to connect to {ip}:{port}", DEBUG_MODE)
             else:
+                self.printer.print(
+                    f"checking {ip}:{port} in {self.peers_to_flood}")
                 if (ip, port) in self.peers_to_flood:
                     data = Connection(s, ip, port, sock_type=socket_type.PEER,
                                       listener_port=port, to_flood=True)
