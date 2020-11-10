@@ -1,0 +1,24 @@
+Listening on port 34409
+peers_to_flood are [('127.0.0.1', 33547)]
+connecting to seed 127.0.0.1:6000
+Sending listening info to 127.0.0.1:6000
+Received peer list from 127.0.0.1:6000 [['127.0.0.1', 41097], ['127.0.0.1', 33547]]
+Connecting to peers
+Received Peer List is [('127.0.0.1', 33547), ('127.0.0.1', 41097)]
+connecting to peer 127.0.0.1:41097
+checking 127.0.0.1:41097 in [('127.0.0.1', 33547)]
+connecting to peer 127.0.0.1:33547
+checking 127.0.0.1:33547 in [('127.0.0.1', 33547)]
+sent connection request to all
+Number of out neighbours: 2
+Sending listening info to 127.0.0.1:41097
+Sending listening info to 127.0.0.1:33547
+Received information about listening port from 127.0.0.1:41097 Listening Port:41097
+Received k = 1 from 127.0.0.1:41097 via: Height:1
+Received new block: 9e1c_0000_1605008359_1 with hash 43d9 from 127.0.0.1:41097 at 2020-11-10 17:09:20.389254
+Received Sync Complete from 127.0.0.1:41097 via: Sync Complete
+Received information about listening port from 127.0.0.1:33547 Listening Port:33547
+Received k = 0 from 127.0.0.1:33547 via: Height:0
+Received Sync Complete from 127.0.0.1:33547 via: Sync Complete
+Sending block: 9e1c_0000_1605008359_1 to 127.0.0.1:33547
+Received stale block 9e1c_0000_1605008359_1 from 127.0.0.1:33547.
