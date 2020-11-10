@@ -1,0 +1,10 @@
+Seed listening on 127.0.0.1:6000
+Received connection from 127.0.0.1:54662
+Received listening port info Listening Port:54661
+Received connection from 127.0.0.1:54664
+Received listening port info Listening Port:54663
+closing connection to 127.0.0.1:54662
+Receiving Dead node message Dead Node:127.0.0.1:54661:2020-11-07 22:34:41.036545:0.0.0.0
+[('127.0.0.1', 54663)]
+[('127.0.0.1', 54661)]
+closing connection to 127.0.0.1:54664
