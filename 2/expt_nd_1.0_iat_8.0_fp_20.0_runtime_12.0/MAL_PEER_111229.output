@@ -1,0 +1,195 @@
+Listening on port 35911
+peers_to_flood are [('127.0.0.1', 41403)]
+connecting to seed 127.0.0.1:6000
+Sending listening info to 127.0.0.1:6000
+Received peer list from 127.0.0.1:6000 [['127.0.0.1', 40577], ['127.0.0.1', 41403]]
+Connecting to peers
+Received Peer List is [('127.0.0.1', 41403), ('127.0.0.1', 40577)]
+connecting to peer 127.0.0.1:41403
+checking 127.0.0.1:41403 in [('127.0.0.1', 41403)]
+connecting to peer 127.0.0.1:40577
+checking 127.0.0.1:40577 in [('127.0.0.1', 41403)]
+sent connection request to all
+Number of out neighbours: 2
+Sending listening info to 127.0.0.1:41403
+Sending listening info to 127.0.0.1:40577
+Received information about listening port from 127.0.0.1:41403 Listening Port:41403
+Received k = 0 from 127.0.0.1:41403 via: Height:0
+Received information about listening port from 127.0.0.1:40577 Listening Port:40577
+Received k = 0 from 127.0.0.1:40577 via: Height:0
+Received Sync Complete from 127.0.0.1:40577 via: Sync Complete
+Received Sync Complete from 127.0.0.1:41403 via: Sync Complete
+Generated a block: 9e1c_0000_1605074680_1 with hash 83e6
+Sending block: 9e1c_0000_1605074680_1 to 127.0.0.1:40577
+Sending block: 9e1c_0000_1605074680_1 to 127.0.0.1:41403
+Generated a block: 83e6_0000_1605074688_2 with hash d60a
+Sending block: 83e6_0000_1605074688_2 to 127.0.0.1:40577
+Sending block: 83e6_0000_1605074688_2 to 127.0.0.1:41403
+Received new block: d60a_0000_1605074694_3 with hash d004 from 127.0.0.1:40577 at 2020-11-11 11:34:55.861488
+Sending block: d60a_0000_1605074694_3 to 127.0.0.1:41403
+Received stale block d60a_0000_1605074694_3 from 127.0.0.1:41403.
+Received new block: d004_0000_1605074710_4 with hash 4ebf from 127.0.0.1:40577 at 2020-11-11 11:35:11.700783
+Sending block: d004_0000_1605074710_4 to 127.0.0.1:41403
+Received stale block d004_0000_1605074710_4 from 127.0.0.1:41403.
+Received new block: 4ebf_0000_1605074722_5 with hash a9a0 from 127.0.0.1:40577 at 2020-11-11 11:35:23.216797
+Sending block: 4ebf_0000_1605074722_5 to 127.0.0.1:41403
+Received stale block 4ebf_0000_1605074722_5 from 127.0.0.1:41403.
+Generated a block: a9a0_0000_1605074776_6 with hash 160e
+Sending block: a9a0_0000_1605074776_6 to 127.0.0.1:40577
+Sending block: a9a0_0000_1605074776_6 to 127.0.0.1:41403
+Received new block: a9a0_0000_1605074775_6 with hash 7f3d from 127.0.0.1:40577 at 2020-11-11 11:36:16.360136
+Sending block: a9a0_0000_1605074775_6 to 127.0.0.1:41403
+Received stale block a9a0_0000_1605074775_6 from 127.0.0.1:41403.
+Generated a block: 160e_0000_1605074811_7 with hash 8d10
+Sending block: 160e_0000_1605074811_7 to 127.0.0.1:40577
+Sending block: 160e_0000_1605074811_7 to 127.0.0.1:41403
+Received new block: 8d10_0000_1605074847_8 with hash 9fba from 127.0.0.1:40577 at 2020-11-11 11:37:28.097060
+Sending block: 8d10_0000_1605074847_8 to 127.0.0.1:41403
+Received stale block 8d10_0000_1605074847_8 from 127.0.0.1:41403.
+Received new block: 9fba_0000_1605074869_9 with hash a31a from 127.0.0.1:40577 at 2020-11-11 11:37:51.029244
+Sending block: 9fba_0000_1605074869_9 to 127.0.0.1:41403
+Received stale block 9fba_0000_1605074869_9 from 127.0.0.1:41403.
+Received new block: a31a_0000_1605074876_10 with hash 5ae5 from 127.0.0.1:40577 at 2020-11-11 11:37:57.138684
+Sending block: a31a_0000_1605074876_10 to 127.0.0.1:41403
+Received stale block a31a_0000_1605074876_10 from 127.0.0.1:41403.
+Received new block: 5ae5_0000_1605074882_11 with hash c722 from 127.0.0.1:40577 at 2020-11-11 11:38:03.836862
+Sending block: 5ae5_0000_1605074882_11 to 127.0.0.1:41403
+Received stale block 5ae5_0000_1605074882_11 from 127.0.0.1:41403.
+Received new block: c722_0000_1605074886_12 with hash e8ad from 127.0.0.1:40577 at 2020-11-11 11:38:07.716791
+Sending block: c722_0000_1605074886_12 to 127.0.0.1:41403
+Received stale block c722_0000_1605074886_12 from 127.0.0.1:41403.
+Received new block: e8ad_0000_1605074901_13 with hash 1b0a from 127.0.0.1:40577 at 2020-11-11 11:38:22.569986
+Sending block: e8ad_0000_1605074901_13 to 127.0.0.1:41403
+Received stale block e8ad_0000_1605074901_13 from 127.0.0.1:41403.
+Received new block: 1b0a_0000_1605074911_14 with hash d811 from 127.0.0.1:40577 at 2020-11-11 11:38:32.731482
+Sending block: 1b0a_0000_1605074911_14 to 127.0.0.1:41403
+Received stale block 1b0a_0000_1605074911_14 from 127.0.0.1:41403.
+Received new block: d811_0000_1605074927_15 with hash e957 from 127.0.0.1:40577 at 2020-11-11 11:38:48.850291
+Sending block: d811_0000_1605074927_15 to 127.0.0.1:41403
+Received stale block d811_0000_1605074927_15 from 127.0.0.1:41403.
+Generated a block: e957_0000_1605074948_16 with hash 4838
+Sending block: e957_0000_1605074948_16 to 127.0.0.1:40577
+Sending block: e957_0000_1605074948_16 to 127.0.0.1:41403
+Received new block: 4838_0000_1605074958_17 with hash 55f0 from 127.0.0.1:40577 at 2020-11-11 11:39:20.047740
+Sending block: 4838_0000_1605074958_17 to 127.0.0.1:41403
+Received stale block 4838_0000_1605074958_17 from 127.0.0.1:41403.
+Received new block: 55f0_0000_1605074980_18 with hash 30c1 from 127.0.0.1:40577 at 2020-11-11 11:39:42.026821
+Sending block: 55f0_0000_1605074980_18 to 127.0.0.1:41403
+Received stale block 55f0_0000_1605074980_18 from 127.0.0.1:41403.
+Received new block: 30c1_0000_1605074998_19 with hash 8e48 from 127.0.0.1:40577 at 2020-11-11 11:39:59.988417
+Sending block: 30c1_0000_1605074998_19 to 127.0.0.1:41403
+Received stale block 30c1_0000_1605074998_19 from 127.0.0.1:41403.
+Received new block: 8e48_0000_1605075000_20 with hash db0e from 127.0.0.1:40577 at 2020-11-11 11:40:01.149743
+Sending block: 8e48_0000_1605075000_20 to 127.0.0.1:41403
+Received stale block 8e48_0000_1605075000_20 from 127.0.0.1:41403.
+Generated a block: db0e_0000_1605075009_21 with hash 9971
+Sending block: db0e_0000_1605075009_21 to 127.0.0.1:40577
+Sending block: db0e_0000_1605075009_21 to 127.0.0.1:41403
+Received new block: 9971_0000_1605075021_22 with hash acb9 from 127.0.0.1:40577 at 2020-11-11 11:40:22.237246
+Sending block: 9971_0000_1605075021_22 to 127.0.0.1:41403
+Received stale block 9971_0000_1605075021_22 from 127.0.0.1:41403.
+Received new block: acb9_0000_1605075023_23 with hash 90d6 from 127.0.0.1:40577 at 2020-11-11 11:40:24.398397
+Sending block: acb9_0000_1605075023_23 to 127.0.0.1:41403
+Received stale block acb9_0000_1605075023_23 from 127.0.0.1:41403.
+Received new block: 90d6_0000_1605075026_24 with hash a979 from 127.0.0.1:40577 at 2020-11-11 11:40:27.440007
+Sending block: 90d6_0000_1605075026_24 to 127.0.0.1:41403
+Received stale block 90d6_0000_1605075026_24 from 127.0.0.1:41403.
+Received new block: a979_0000_1605075032_25 with hash 188d from 127.0.0.1:41403 at 2020-11-11 11:40:34.054287
+Sending block: a979_0000_1605075032_25 to 127.0.0.1:40577
+Received stale block a979_0000_1605075032_25 from 127.0.0.1:40577.
+Received new block: 188d_0000_1605075045_26 with hash 024a from 127.0.0.1:40577 at 2020-11-11 11:40:46.310501
+Sending block: 188d_0000_1605075045_26 to 127.0.0.1:41403
+Received stale block 188d_0000_1605075045_26 from 127.0.0.1:41403.
+Generated a block: 024a_0000_1605075054_27 with hash 67ec
+Sending block: 024a_0000_1605075054_27 to 127.0.0.1:40577
+Sending block: 024a_0000_1605075054_27 to 127.0.0.1:41403
+Received new block: 67ec_0000_1605075088_28 with hash f29b from 127.0.0.1:40577 at 2020-11-11 11:41:29.197782
+Sending block: 67ec_0000_1605075088_28 to 127.0.0.1:41403
+Received stale block 67ec_0000_1605075088_28 from 127.0.0.1:41403.
+Generated a block: f29b_0000_1605075111_29 with hash e983
+Sending block: f29b_0000_1605075111_29 to 127.0.0.1:40577
+Sending block: f29b_0000_1605075111_29 to 127.0.0.1:41403
+Received new block: e983_0000_1605075123_30 with hash 8730 from 127.0.0.1:40577 at 2020-11-11 11:42:04.095528
+Sending block: e983_0000_1605075123_30 to 127.0.0.1:41403
+Received stale block e983_0000_1605075123_30 from 127.0.0.1:41403.
+Received new block: 8730_0000_1605075152_31 with hash 4e28 from 127.0.0.1:40577 at 2020-11-11 11:42:33.812734
+Sending block: 8730_0000_1605075152_31 to 127.0.0.1:41403
+Received stale block 8730_0000_1605075152_31 from 127.0.0.1:41403.
+Received new block: 4e28_0000_1605075180_32 with hash 119e from 127.0.0.1:40577 at 2020-11-11 11:43:01.424622
+Sending block: 4e28_0000_1605075180_32 to 127.0.0.1:41403
+Generated a block: 119e_0000_1605075182_33 with hash f743
+Sending block: 119e_0000_1605075182_33 to 127.0.0.1:40577
+Sending block: 119e_0000_1605075182_33 to 127.0.0.1:41403
+Received stale block 4e28_0000_1605075180_32 from 127.0.0.1:41403.
+Received new block: f743_0000_1605075190_34 with hash 514e from 127.0.0.1:40577 at 2020-11-11 11:43:11.511677
+Sending block: f743_0000_1605075190_34 to 127.0.0.1:41403
+Received stale block f743_0000_1605075190_34 from 127.0.0.1:41403.
+Generated a block: 514e_0000_1605075200_35 with hash c08f
+Sending block: 514e_0000_1605075200_35 to 127.0.0.1:40577
+Sending block: 514e_0000_1605075200_35 to 127.0.0.1:41403
+Received new block: c08f_0000_1605075205_36 with hash a106 from 127.0.0.1:41403 at 2020-11-11 11:43:26.099221
+Sending block: c08f_0000_1605075205_36 to 127.0.0.1:40577
+Received stale block c08f_0000_1605075205_36 from 127.0.0.1:40577.
+Generated a block: a106_0000_1605075218_37 with hash 2400
+Sending block: a106_0000_1605075218_37 to 127.0.0.1:40577
+Sending block: a106_0000_1605075218_37 to 127.0.0.1:41403
+Generated a block: 2400_0000_1605075219_38 with hash 3994
+Sending block: 2400_0000_1605075219_38 to 127.0.0.1:40577
+Sending block: 2400_0000_1605075219_38 to 127.0.0.1:41403
+Received new block: 3994_0000_1605075223_39 with hash ae3e from 127.0.0.1:40577 at 2020-11-11 11:43:44.815303
+Sending block: 3994_0000_1605075223_39 to 127.0.0.1:41403
+Received stale block 3994_0000_1605075223_39 from 127.0.0.1:41403.
+Received new block: ae3e_0000_1605075232_40 with hash 48a2 from 127.0.0.1:40577 at 2020-11-11 11:43:53.959188
+Sending block: ae3e_0000_1605075232_40 to 127.0.0.1:41403
+Received stale block ae3e_0000_1605075232_40 from 127.0.0.1:41403.
+Received new block: 48a2_0000_1605075248_41 with hash e0b8 from 127.0.0.1:40577 at 2020-11-11 11:44:09.851376
+Sending block: 48a2_0000_1605075248_41 to 127.0.0.1:41403
+Received stale block 48a2_0000_1605075248_41 from 127.0.0.1:41403.
+Received new block: e0b8_0000_1605075251_42 with hash 1735 from 127.0.0.1:40577 at 2020-11-11 11:44:13.024298
+Sending block: e0b8_0000_1605075251_42 to 127.0.0.1:41403
+Generated a block: 1735_0000_1605075253_43 with hash f173
+Sending block: 1735_0000_1605075253_43 to 127.0.0.1:40577
+Sending block: 1735_0000_1605075253_43 to 127.0.0.1:41403
+Received stale block e0b8_0000_1605075251_42 from 127.0.0.1:41403.
+Generated a block: f173_0000_1605075263_44 with hash a9b8
+Sending block: f173_0000_1605075263_44 to 127.0.0.1:40577
+Sending block: f173_0000_1605075263_44 to 127.0.0.1:41403
+Received new block: a9b8_0000_1605075272_45 with hash 7e7a from 127.0.0.1:40577 at 2020-11-11 11:44:33.985962
+Sending block: a9b8_0000_1605075272_45 to 127.0.0.1:41403
+Received new block: 7e7a_0000_1605075273_46 with hash 60f4 from 127.0.0.1:40577 at 2020-11-11 11:44:34.518137
+Sending block: 7e7a_0000_1605075273_46 to 127.0.0.1:41403
+Received stale block a9b8_0000_1605075272_45 from 127.0.0.1:41403.
+Received stale block 7e7a_0000_1605075273_46 from 127.0.0.1:41403.
+Generated a block: 60f4_0000_1605075278_47 with hash 2d41
+Sending block: 60f4_0000_1605075278_47 to 127.0.0.1:40577
+Sending block: 60f4_0000_1605075278_47 to 127.0.0.1:41403
+Generated a block: 2d41_0000_1605075279_48 with hash 598c
+Sending block: 2d41_0000_1605075279_48 to 127.0.0.1:40577
+Sending block: 2d41_0000_1605075279_48 to 127.0.0.1:41403
+Generated a block: 598c_0000_1605075286_49 with hash fb3d
+Sending block: 598c_0000_1605075286_49 to 127.0.0.1:40577
+Sending block: 598c_0000_1605075286_49 to 127.0.0.1:41403
+Generated a block: fb3d_0000_1605075303_50 with hash 9212
+Sending block: fb3d_0000_1605075303_50 to 127.0.0.1:40577
+Sending block: fb3d_0000_1605075303_50 to 127.0.0.1:41403
+Received new block: 9212_0000_1605075306_51 with hash 2b98 from 127.0.0.1:40577 at 2020-11-11 11:45:07.445278
+Sending block: 9212_0000_1605075306_51 to 127.0.0.1:41403
+Generated a block: 2b98_0000_1605075307_52 with hash 6ad8
+Sending block: 2b98_0000_1605075307_52 to 127.0.0.1:40577
+Sending block: 2b98_0000_1605075307_52 to 127.0.0.1:41403
+Received stale block 9212_0000_1605075306_51 from 127.0.0.1:41403.
+Received new block: 6ad8_0000_1605075331_53 with hash 070c from 127.0.0.1:40577 at 2020-11-11 11:45:32.323062
+Sending block: 6ad8_0000_1605075331_53 to 127.0.0.1:41403
+Received stale block 6ad8_0000_1605075331_53 from 127.0.0.1:41403.
+Generated a block: 070c_0000_1605075336_54 with hash 4d09
+Sending block: 070c_0000_1605075336_54 to 127.0.0.1:40577
+Sending block: 070c_0000_1605075336_54 to 127.0.0.1:41403
+Generated a block: 4d09_0000_1605075348_55 with hash f0d9
+Sending block: 4d09_0000_1605075348_55 to 127.0.0.1:40577
+Sending block: 4d09_0000_1605075348_55 to 127.0.0.1:41403
+Received new block: f0d9_0000_1605075362_56 with hash e77d from 127.0.0.1:40577 at 2020-11-11 11:46:03.249251
+Sending block: f0d9_0000_1605075362_56 to 127.0.0.1:41403
+Received stale block f0d9_0000_1605075362_56 from 127.0.0.1:41403.
+Generated a block: e77d_0000_1605075372_57 with hash 5dae
+Sending block: e77d_0000_1605075372_57 to 127.0.0.1:40577
+Sending block: e77d_0000_1605075372_57 to 127.0.0.1:41403
