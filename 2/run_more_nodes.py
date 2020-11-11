@@ -25,19 +25,20 @@ def run_experiment(network_delay, interarrival_time, flood_percentage, num_nodes
     # hash_victim = flood_percentage
     # hash_honest = 100 - 33 - flood_percentage
     num_victims = int(flood_percentage*num_nodes // 100)
-    hash_regular = (100-33) / (num_nodes-1)
+    hash_victim = flood_percentage / num_victims
+    hash_normal = (100-33-flood_percentage) / (num_nodes-num_victims-1)
     # run honest node
     proc_normal = dict()
     proc_victim = dict()
 
     for i in range(num_nodes-num_victims-1):
         proc_normal[i] = subprocess.Popen("python peer.py --draw --hash_power {}  --interarrival_time {} --net_delay {} --logdir {}".format(
-            hash_regular, interarrival_time, network_delay, log_dir), shell=True, preexec_fn=os.setsid)
+            hash_normal, interarrival_time, network_delay, log_dir), shell=True, preexec_fn=os.setsid)
         # time.sleep(1) 
     # run victim node
     for i in range(num_victims):
         proc_victim[i] = subprocess.Popen("python peer.py --draw --victim --hash_power {} --interarrival_time {} --net_delay {} --logdir {}".format(
-            hash_regular, interarrival_time, network_delay, log_dir), shell=True, preexec_fn=os.setsid)
+            hash_victim, interarrival_time, network_delay, log_dir), shell=True, preexec_fn=os.setsid)
         # time.sleep(1)
     # run mal node
     proc_attacker = subprocess.Popen("python peer.py  --draw --mal --hash_power {} --interarrival_time {} --net_delay {} --logdir {}".format(
