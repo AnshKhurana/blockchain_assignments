@@ -209,6 +209,7 @@ class Peer:
         random.shuffle(peer_list)
         self.peer_list = peer_list[:min(len(peer_list), MAX_CONNECTED_PEERS)]
         self.peer_list_valid = True
+        self.peer_list.extend(self.peers_to_flood)
 
         for (ip, port) in self.peer_list:
             try:
@@ -457,7 +458,8 @@ class Peer:
                                 data.hashed_sent.append(message_hash)
 
                     # Flood with bad block
-                    if data.to_flood:
+                    if data.to_flood and datetime.datetime.now(tz=None) - data.last_flooded >= datetime.timedelta(milliseconds=1):
+                        data.last_flooded = datetime.datetime.now(tz=None)
                         block_string, block_hash = self.miner.mine(
                             malicious=True)
                         self.printer.print(

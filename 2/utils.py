@@ -284,6 +284,7 @@ class Connection(object):
         self.k = -1
         self.sent_k = True
         self.to_flood = to_flood
+        self.last_flooded = datetime.datetime.now(tz=None)
 
     def pretty(self):
         """Return ip and port info."""
