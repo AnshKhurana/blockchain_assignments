@@ -379,14 +379,15 @@ class Peer:
             if mask & selectors.EVENT_READ:
                 recv_data = sock.recv(PACKET_SIZE)  # Should be ready to read
                 if not recv_data:
+                    pass
                     # print("should close connection to", data.ip, ":", data.port, "in 3 tries")
                     # Currently commented out just to check the correctness of dead node reporting
-                    self.printer.print(
-                        f"Closing connection to peer {data.ip}:{data.port}", DEBUG_MODE)
-                    self.sel.unregister(sock)
-                    sock.close()
-                    if data.listener_port:
-                        self.handle_dead_peer(sock, data)
+                    # self.printer.print(
+                    #     f"Closing connection to peer {data.ip}:{data.port}", DEBUG_MODE)
+                    # self.sel.unregister(sock)
+                    # sock.close()
+                    # if data.listener_port:
+                    #     self.handle_dead_peer(sock, data)
                 else:
                     self.parse_peer_message(
                         sock, data, recv_data.decode(encoding))
@@ -398,7 +399,10 @@ class Peer:
                         f"Sending listening info to {data.ip}:{data.port}", DEBUG_MODE)
                     port_message = listening_port_msg.format(
                         self.listening_port)
-                    sock.sendall(port_message.encode(encoding))
+                    try:
+                        sock.sendall(port_message.encode(encoding))
+                    except:
+                        pass
                     data.sent_id = True
 
                 # send height info and then send all the blocks
@@ -407,7 +411,10 @@ class Peer:
                         self.miner.blockchain.max_level)
                     self.printer.print(
                         f"Sending message {height_message} to {data.ip}:{data.port}", DEBUG_MODE)
-                    sock.sendall(height_message.encode(encoding))
+                    try:
+                        sock.sendall(height_message.encode(encoding))
+                    except:
+                        pass
                     data.sent_k = True
 
                     # Syncing my blocks
@@ -416,12 +423,18 @@ class Peer:
                         block_message = block_msg.format(block_string)
                         self.printer.print(
                             f"Syncing my block: {block_string} with {data.ip}:{data.port}", DEBUG_MODE)
-                        sock.sendall(block_message.encode(encoding))
+                        try:
+                            sock.sendall(block_message.encode(encoding))
+                        except:
+                            pass
 
                     # Send sync complete message to peer
                     self.printer.print(
                         f"Sending {sync_complete_msg} to {data.ip}:{data.port}", DEBUG_MODE)
-                    sock.sendall(sync_complete_msg.encode(encoding))
+                    try:
+                        sock.sendall(sync_complete_msg.encode(encoding))
+                    except:
+                        pass
 
                 elif data.liveness_timestamp is None or current_time-data.liveness_timestamp > datetime.timedelta(seconds=LIVENESS_DELAY):
 
@@ -435,13 +448,17 @@ class Peer:
                         try:
                             sock.sendall(message.encode(encoding))
                         except:
-                            self.printer.print(
-                                f"failed to send liveness request to {data.ip}:{data.port}", LIVENESS_DEBUG_MODE)
+                            pass
+                            # self.printer.print(
+                            #     f"failed to send liveness request to {data.ip}:{data.port}", LIVENESS_DEBUG_MODE)
                         data.liveness_timestamp = current_time
                         data.tries_left -= 1
 
                 elif len(data.delayed_queue) > 0 and datetime.datetime.now(tz=None) > data.delayed_queue[0][1]:
-                    sock.sendall(data.delayed_queue[0][0])
+                    try:
+                        sock.sendall(data.delayed_queue[0][0])
+                    except:
+                        pass
                     data.delayed_queue.pop(0)
                     # print(data.delayed_queue)
 
