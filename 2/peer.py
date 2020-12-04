@@ -147,7 +147,8 @@ class Peer:
 
             # Non-empty pending queue -> stop mining, process the pending_queue and broadcast valid blocks
             if not self.miner.pending_queue.empty():
-                block_strings = self.miner.process_pending_queue()
+                block_strings = self.miner.process_pending_queue(
+                    self.mine_delay)
                 for block_string, send_not_ip, send_not_port in block_strings:
                     self.peer_broadcast_queue.append(
                         (block_msg.format(block_string), send_not_ip, send_not_port))
@@ -347,7 +348,7 @@ class Peer:
                             self.miner.add_to_pending_queue(
                                 block, data.ip, data.port)
                         else:
-                            self.miner.add_to_tree(block)
+                            self.miner.add_to_tree(block, self.mine_delay)
                 except:
                     pass
 
