@@ -22,9 +22,9 @@ def make_plot_mpu():
             print("For experiment: ", expt_dir)
             mpu.append(get_mpu(expt_dir))
             avf.append(get_av(expt_dir))
-        save_plot(mpu, iat_list, 'Mining Power Utilization vs Interarrival time with Flooding Percentage = {}'.format(
+        save_plot(mpu, iat_list, 'MPU vs IAT with FP = {}'.format(
             fp), 'IAT (s)', 'MPU', 'mpu_vs_iat_fp_{}'.format(fp))
-        save_plot(avf, iat_list, 'Fraction of Blocks from Adversary vs Interarrival time with Flooding Percentage = {}'.format(
+        save_plot(avf, iat_list, 'Adversary fraction vs IAT with FP = {}'.format(
             fp), 'IAT (s)', 'Fraction', 'avf_vs_iat_fp_{}'.format(fp))
         # time to make the plots
 
