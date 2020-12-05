@@ -28,6 +28,8 @@ DEBUG_MODE = True  # Change to false for submission
 LIVENESS_DEBUG_MODE = False  # Change to false for submission
 PRINT_FLOODS = False  # Change to false for submission
 
+validation_delay = datetime.timedelta(milliseconds=5)
+
 dead_node_msg = "Dead Node:{}:{}:{}:{}~"
 listening_port_msg = "Listening Port:{}~"
 liveness_request_msg = "Liveness Request:{}:{}:{}~"
@@ -96,9 +98,7 @@ class Blockchain(object):
 
             self.chain = nx.Graph()
 
-    def validate(self, block, mine_delay=None):
-        if mine_delay is not None:
-            mine_delay += datetime.timedelta(milliseconds=1)
+    def validate(self, block):
         block_time = int(block.timestamp)
         if block.previous_hash not in self.tree and block.previous_hash != self.genesis_hash:
             return False
@@ -204,19 +204,21 @@ class Miner(object):
     def add_to_pending_queue(self, block, send_not_ip, send_not_port):
         self.pending_queue.put((block, send_not_ip, send_not_port))
 
-    def add_to_tree(self, block, mine_delay=None):
-        if self.blockchain.validate(block, mine_delay):
+    def add_to_tree(self, block):
+        if self.blockchain.validate(block):
             self.blockchain.add(block)
 
-    def process_pending_queue(self, mine_delay=None):
+    def process_pending_queue(self):
         valid_block_strings = []
+        total_delay = datetime.timedelta(milliseconds=0)
         while not self.pending_queue.empty():
             block, send_not_ip, send_not_port = self.pending_queue.get()
-            if self.blockchain.validate(block, mine_delay):
+            if self.blockchain.validate(block):
                 self.blockchain.add(block)
                 valid_block_strings.append(
                     (str(block), send_not_ip, send_not_port))
-        return valid_block_strings
+            total_delay += validation_delay
+        return valid_block_strings, total_delay
 
 
 class socket_type(Enum):

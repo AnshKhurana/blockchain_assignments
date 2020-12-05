@@ -12,10 +12,10 @@ def save_plot(y, x, title, xtitle, ytitle, save_name):
 
 
 def make_plot_mpu():
-    for fp in [10, 20]:
+    for fp in [10, 20, 30]:
         mpu = []
         avf = []
-        iat_list = [2, 4, 8, 16, 32]
+        iat_list = [1, 2, 4, 8, 12]
         for iat in iat_list:
             expt_dir = 'expt_nd_1.0_iat_{}.0_fp_{}.0_runtime_12.0'.format(
                 iat, fp)

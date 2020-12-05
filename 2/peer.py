@@ -147,8 +147,7 @@ class Peer:
 
             # Non-empty pending queue -> stop mining, process the pending_queue and broadcast valid blocks
             if not self.miner.pending_queue.empty():
-                block_strings = self.miner.process_pending_queue(
-                    self.mine_delay)
+                block_strings, delay = self.miner.process_pending_queue()
                 for block_string, send_not_ip, send_not_port in block_strings:
                     self.peer_broadcast_queue.append(
                         (block_msg.format(block_string), send_not_ip, send_not_port))
@@ -157,7 +156,7 @@ class Peer:
                     self.message_list[message_hash] = True
                 current_time = datetime.datetime.now(tz=None)
                 self.mine_timestamp = current_time
-                self.mine_delay = self.miner.waiting_time()
+                self.mine_delay = self.miner.waiting_time() + delay
 
             # Block generation and broadcasting
             if self.start_mining and (current_time - self.mine_timestamp) > self.mine_delay:
@@ -348,7 +347,9 @@ class Peer:
                             self.miner.add_to_pending_queue(
                                 block, data.ip, data.port)
                         else:
-                            self.miner.add_to_tree(block, self.mine_delay)
+                            if self.mine_delay is not None:
+                                self.mine_delay += validation_delay
+                            self.miner.add_to_tree(block)
                 except:
                     pass
 
