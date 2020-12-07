@@ -12,7 +12,7 @@ def save_plot(y, x, title, xtitle, ytitle, save_name):
 
 
 def make_plot_mpu():
-    for fp in [20, 30]:
+    for fp in [10, 20, 30]:
         mpu = []
         avf = []
         iat_list = [1, 2, 4, 6, 8, 10]
