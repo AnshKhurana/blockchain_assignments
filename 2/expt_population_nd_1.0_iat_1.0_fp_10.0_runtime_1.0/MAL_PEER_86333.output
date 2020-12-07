@@ -1,0 +1,22 @@
+Listening on port 54211
+peers_to_flood are [('127.0.0.1', 54196)]
+connecting to seed 127.0.0.1:6000
+Sending listening info to 127.0.0.1:6000
+Received peer list from 127.0.0.1:6000 [['127.0.0.1', 58049], ['127.0.0.1', 54195], ['127.0.0.1', 54196], ['127.0.0.1', 54199], ['127.0.0.1', 54201], ['127.0.0.1', 54203], ['127.0.0.1', 54205], ['127.0.0.1', 54207], ['127.0.0.1', 54209], ['127.0.0.1', 54212]]
+Connecting to peers
+Received Peer List is [('127.0.0.1', 54207), ('127.0.0.1', 54212), ('127.0.0.1', 54205), ('127.0.0.1', 54199), ('127.0.0.1', 54196), ('127.0.0.1', 58049), ('127.0.0.1', 54209), ('127.0.0.1', 54203), ('127.0.0.1', 54201), ('127.0.0.1', 54195)]
+connecting to peer 127.0.0.1:54209
+checking 127.0.0.1:54209 in [('127.0.0.1', 54196)]
+connecting to peer 127.0.0.1:58049
+checking 127.0.0.1:58049 in [('127.0.0.1', 54196)]
+connecting to peer 127.0.0.1:54205
+checking 127.0.0.1:54205 in [('127.0.0.1', 54196)]
+connecting to peer 127.0.0.1:54212
+checking 127.0.0.1:54212 in [('127.0.0.1', 54196)]
+sent connection request to all
+Number of out neighbours: 4
+Sending listening info to 127.0.0.1:54209
+Closing connection to peer 127.0.0.1:58049
+Reporting Dead Node:127.0.0.1:58049:2020-11-10 23:20:18.935475:0.0.0.0
+Sending listening info to 127.0.0.1:58049
+Closing connection to peer 127.0.0.1:58049

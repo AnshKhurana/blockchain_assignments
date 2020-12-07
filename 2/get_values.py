@@ -9,8 +9,30 @@ parser.add_argument('--experiment_root_dir', type=str, required=True)
 
 def get_mpu(root_path_dir):
     file_list = glob.glob(os.path.join(root_path_dir, '*BLOCK_DB*.output'))
-    mpu = 0
+    info_file = os.path.join(root_path_dir, 'victim_nodes.output')
+    
+    peers_to_flood = []
+    with open(info_file, 'r') as file:
+        peers = file.readlines()
+        peer_info = []
+        for peer in peers:
+            ip = peer.split(':')[0]
+            port = int(peer.split(':')[1].replace('\n', ''))
+            peer_info.append(port)
+        peers_to_flood = peer_info
+
+    clean_file_list = []
     for file in file_list:
+        with open(file, 'r') as f:
+            first_line = f.readlines()[0] # "Listening on port xyz"
+            port_num = int(first_line.strip().split()[-1])
+            if port_num in peers_to_flood:
+                continue
+            else:
+                clean_file_list.append(file)
+    mpu = 0
+    
+    for file in clean_file_list:
         block_db = pandas.read_csv(file, sep = '_', header = None)
         longest_chain = block_db[4].max()
         total_blocks = len(block_db)
