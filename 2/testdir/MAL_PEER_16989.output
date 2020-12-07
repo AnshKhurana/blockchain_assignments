@@ -1,0 +1,111 @@
+Listening on port 39025
+peers_to_flood are [('127.0.0.1', 33533)]
+connecting to seed 127.0.0.1:6000
+Sending listening info to 127.0.0.1:6000
+Received peer list from 127.0.0.1:6000 [['127.0.0.1', 33533]]
+Connecting to peers
+Received Peer List is [('127.0.0.1', 33533)]
+connecting to peer 127.0.0.1:33533
+checking 127.0.0.1:33533 in [('127.0.0.1', 33533)]
+connecting to peer 127.0.0.1:33533
+checking 127.0.0.1:33533 in [('127.0.0.1', 33533)]
+sent connection request to all
+Number of out neighbours: 2
+Sending listening info to 127.0.0.1:33533
+Sending listening info to 127.0.0.1:33533
+Received information about listening port from 127.0.0.1:33533 Listening Port:33533
+Received k = 1 from 127.0.0.1:33533 via: Height:1
+Received new block: 9e1c_0000_1607328780_1 with hash fadc from 127.0.0.1:33533 at 2020-12-07 13:43:01.016133
+Received Sync Complete from 127.0.0.1:33533 via: Sync Complete
+Received information about listening port from 127.0.0.1:33533 Listening Port:33533
+Received k = 1 from 127.0.0.1:33533 via: Height:1
+Received stale block 9e1c_0000_1607328780_1 from 127.0.0.1:33533.
+Received Sync Complete from 127.0.0.1:33533 via: Sync Complete
+Generated a block: fadc_0000_1607328792_2 with hash bc44
+Sending block: fadc_0000_1607328792_2 to 127.0.0.1:33533
+Sending block: fadc_0000_1607328792_2 to 127.0.0.1:33533
+Generated a block: bc44_0000_1607328793_3 with hash 3e24
+Sending block: bc44_0000_1607328793_3 to 127.0.0.1:33533
+Sending block: bc44_0000_1607328793_3 to 127.0.0.1:33533
+Received stale block fadc_0000_1607328792_2 from 127.0.0.1:33533.
+Generated a block: 3e24_0000_1607328795_4 with hash 61b1
+Sending block: 3e24_0000_1607328795_4 to 127.0.0.1:33533
+Sending block: 3e24_0000_1607328795_4 to 127.0.0.1:33533
+Generated a block: 61b1_0000_1607328808_5 with hash a521
+Sending block: 61b1_0000_1607328808_5 to 127.0.0.1:33533
+Sending block: 61b1_0000_1607328808_5 to 127.0.0.1:33533
+Generated a block: a521_0000_1607328815_6 with hash 76ff
+Sending block: a521_0000_1607328815_6 to 127.0.0.1:33533
+Sending block: a521_0000_1607328815_6 to 127.0.0.1:33533
+Generated a block: 76ff_0000_1607328819_7 with hash 4449
+Sending block: 76ff_0000_1607328819_7 to 127.0.0.1:33533
+Sending block: 76ff_0000_1607328819_7 to 127.0.0.1:33533
+Generated a block: 4449_0000_1607328823_8 with hash 3782
+Sending block: 4449_0000_1607328823_8 to 127.0.0.1:33533
+Sending block: 4449_0000_1607328823_8 to 127.0.0.1:33533
+Received stale block bc44_0000_1607328793_3 from 127.0.0.1:33533.
+Received stale block 3e24_0000_1607328795_4 from 127.0.0.1:33533.
+Received stale block 61b1_0000_1607328808_5 from 127.0.0.1:33533.
+Received stale block a521_0000_1607328815_6 from 127.0.0.1:33533.
+Received stale block 76ff_0000_1607328819_7 from 127.0.0.1:33533.
+Received stale block 4449_0000_1607328823_8 from 127.0.0.1:33533.
+Generated a block: 3782_0000_1607328830_9 with hash bba4
+Sending block: 3782_0000_1607328830_9 to 127.0.0.1:33533
+Sending block: 3782_0000_1607328830_9 to 127.0.0.1:33533
+Generated a block: bba4_0000_1607328830_10 with hash 0142
+Sending block: bba4_0000_1607328830_10 to 127.0.0.1:33533
+Sending block: bba4_0000_1607328830_10 to 127.0.0.1:33533
+Generated a block: 0142_0000_1607328840_11 with hash d2bd
+Sending block: 0142_0000_1607328840_11 to 127.0.0.1:33533
+Sending block: 0142_0000_1607328840_11 to 127.0.0.1:33533
+Generated a block: d2bd_0000_1607328842_12 with hash dfcc
+Sending block: d2bd_0000_1607328842_12 to 127.0.0.1:33533
+Sending block: d2bd_0000_1607328842_12 to 127.0.0.1:33533
+Generated a block: dfcc_0000_1607328843_13 with hash caa7
+Sending block: dfcc_0000_1607328843_13 to 127.0.0.1:33533
+Sending block: dfcc_0000_1607328843_13 to 127.0.0.1:33533
+Generated a block: caa7_0000_1607328844_14 with hash afa3
+Sending block: caa7_0000_1607328844_14 to 127.0.0.1:33533
+Sending block: caa7_0000_1607328844_14 to 127.0.0.1:33533
+Generated a block: afa3_0000_1607328846_15 with hash c654
+Sending block: afa3_0000_1607328846_15 to 127.0.0.1:33533
+Sending block: afa3_0000_1607328846_15 to 127.0.0.1:33533
+Generated a block: c654_0000_1607328854_16 with hash cec6
+Sending block: c654_0000_1607328854_16 to 127.0.0.1:33533
+Sending block: c654_0000_1607328854_16 to 127.0.0.1:33533
+Generated a block: cec6_0000_1607328855_17 with hash 77f0
+Sending block: cec6_0000_1607328855_17 to 127.0.0.1:33533
+Sending block: cec6_0000_1607328855_17 to 127.0.0.1:33533
+Generated a block: 77f0_0000_1607328863_18 with hash 9b9b
+Sending block: 77f0_0000_1607328863_18 to 127.0.0.1:33533
+Sending block: 77f0_0000_1607328863_18 to 127.0.0.1:33533
+Generated a block: 9b9b_0000_1607328866_19 with hash ba1a
+Sending block: 9b9b_0000_1607328866_19 to 127.0.0.1:33533
+Sending block: 9b9b_0000_1607328866_19 to 127.0.0.1:33533
+Generated a block: ba1a_0000_1607328873_20 with hash 1a38
+Sending block: ba1a_0000_1607328873_20 to 127.0.0.1:33533
+Sending block: ba1a_0000_1607328873_20 to 127.0.0.1:33533
+Generated a block: 1a38_0000_1607328878_21 with hash 4c8c
+Sending block: 1a38_0000_1607328878_21 to 127.0.0.1:33533
+Sending block: 1a38_0000_1607328878_21 to 127.0.0.1:33533
+Generated a block: 4c8c_0000_1607328882_22 with hash 38ef
+Sending block: 4c8c_0000_1607328882_22 to 127.0.0.1:33533
+Sending block: 4c8c_0000_1607328882_22 to 127.0.0.1:33533
+Generated a block: 38ef_0000_1607328883_23 with hash 13e1
+Sending block: 38ef_0000_1607328883_23 to 127.0.0.1:33533
+Sending block: 38ef_0000_1607328883_23 to 127.0.0.1:33533
+Generated a block: 13e1_0000_1607328893_24 with hash 838b
+Sending block: 13e1_0000_1607328893_24 to 127.0.0.1:33533
+Sending block: 13e1_0000_1607328893_24 to 127.0.0.1:33533
+Generated a block: 838b_0000_1607328900_25 with hash f38f
+Sending block: 838b_0000_1607328900_25 to 127.0.0.1:33533
+Sending block: 838b_0000_1607328900_25 to 127.0.0.1:33533
+Generated a block: f38f_0000_1607328901_26 with hash 01a0
+Sending block: f38f_0000_1607328901_26 to 127.0.0.1:33533
+Sending block: f38f_0000_1607328901_26 to 127.0.0.1:33533
+Closing connection to peer 127.0.0.1:33533
+Reporting Dead Node:127.0.0.1:33533:2020-12-07 13:45:04.697545:0.0.0.0
+Reporting dead node message to 127.0.0.1:6000 Dead Node:127.0.0.1:33533:2020-12-07 13:45:04.697545:0.0.0.0
+Closing connection to peer 127.0.0.1:33533
+Reporting Dead Node:127.0.0.1:33533:2020-12-07 13:45:04.697764:0.0.0.0
+Reporting dead node message to 127.0.0.1:6000 Dead Node:127.0.0.1:33533:2020-12-07 13:45:04.697764:0.0.0.0

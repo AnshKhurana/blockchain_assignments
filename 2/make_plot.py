@@ -17,7 +17,7 @@ def make_plot_mpu():
         avf = []
         iat_list = [1, 2, 4, 8, 12]
         for iat in iat_list:
-            expt_dir = 'expt_nd_1.0_iat_{}.0_fp_{}.0_runtime_12.0'.format(
+            expt_dir = 'expt_population_nd_1.0_iat_{}.0_fp_{}.0_runtime_20.0'.format(
                 iat, fp)
             print("For experiment: ", expt_dir)
             mpu.append(get_mpu(expt_dir))
