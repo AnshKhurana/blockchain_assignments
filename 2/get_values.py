@@ -27,8 +27,8 @@ def get_mpu(root_path_dir):
             first_line = f.readlines()[0] # "Listening on port xyz"
             port_num = int(first_line.strip().split()[-1])
             if port_num in peers_to_flood:
-                PID = file.split('.')[0].split('_')[-1]
-                file_list = [bfile for bfile in file_list if (not PID in bfile)]
+                PID = file.split('.')[-2].split('_')[-1]
+                file_list = [bfile for bfile in file_list if (PID not in bfile)]
 
     mpu = 0
     for file in file_list:
@@ -40,6 +40,7 @@ def get_mpu(root_path_dir):
         print("file: ", file, mpu_f)
         mpu+=mpu_f
     
+    print(mpu, len(file_list))
     return mpu / len(file_list)
 
 def get_av(root_path_dir):
