@@ -4,8 +4,8 @@ __pycache__/
 *$py.class
 
 # Output
-PEER_*.output
-*.png
+# PEER_*.output
+# *.png
 
 # C extensions
 *.so
