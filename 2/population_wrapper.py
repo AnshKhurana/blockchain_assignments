@@ -11,7 +11,7 @@ def run_all(runtime, nd):
     for fp in [10, 20, 30]:
         for iat in [1, 2, 4, 8, 12]:
             out = subprocess.call(
-                'python run_more_nodes.py --nd {} --iat {} --flood_percentage {} --runtime {}'.format(nd, iat, fp, runtime), shell=True)
+                'python3 run_more_nodes.py --nd {} --iat {} --flood_percentage {} --runtime {}'.format(nd, iat, fp, runtime), shell=True)
 
 
 if __name__ == "__main__":

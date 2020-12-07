@@ -17,7 +17,7 @@ def run_experiment(network_delay, interarrival_time, flood_percentage):
     # run seed
     start_time = time.time()
     log_dir =  "expt_nd_{}_iat_{}_fp_{}_runtime_{}".format(network_delay, interarrival_time, flood_percentage, args.runtime)
-    proc_seed = subprocess.Popen("python seed.py --ip 127.0.0.1 --port 6000 --logdir {}".format(
+    proc_seed = subprocess.Popen("python3 seed.py --ip 127.0.0.1 --port 6000 --logdir {}".format(
         log_dir), shell=True, preexec_fn=os.setsid)
     time.sleep(1)
     hash_attacker = 33
@@ -25,15 +25,15 @@ def run_experiment(network_delay, interarrival_time, flood_percentage):
     hash_honest = 100 - 33 - flood_percentage
 
     # run honest node
-    proc_normal = subprocess.Popen("python peer.py --draw --hash_power {}  --interarrival_time {} --net_delay {} --logdir {}".format(
+    proc_normal = subprocess.Popen("python3 peer.py --draw --hash_power {}  --interarrival_time {} --net_delay {} --logdir {}".format(
         hash_honest, interarrival_time, network_delay, log_dir), shell=True, preexec_fn=os.setsid)
     time.sleep(1) 
     # run victim node
-    proc_victim = subprocess.Popen("python peer.py --draw --victim --hash_power {} --interarrival_time {} --net_delay {} --logdir {}".format(
+    proc_victim = subprocess.Popen("python3 peer.py --draw --victim --hash_power {} --interarrival_time {} --net_delay {} --logdir {}".format(
         hash_victim, interarrival_time, network_delay, log_dir), shell=True, preexec_fn=os.setsid)
     time.sleep(1)
     # run mal node
-    proc_attacker = subprocess.Popen("python peer.py  --draw --mal --hash_power {} --interarrival_time {} --net_delay {} --logdir {}".format(
+    proc_attacker = subprocess.Popen("python3 peer.py  --draw --mal --hash_power {} --interarrival_time {} --net_delay {} --logdir {}".format(
         hash_attacker, interarrival_time, network_delay, log_dir), shell=True, preexec_fn=os.setsid)
     time.sleep(1)
 

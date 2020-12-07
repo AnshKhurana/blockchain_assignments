@@ -18,7 +18,7 @@ def run_experiment(network_delay, interarrival_time, flood_percentage, num_nodes
     # run seed
     start_time = time.time()
     log_dir =  "expt_population_nd_{}_iat_{}_fp_{}_runtime_{}".format(network_delay, interarrival_time, flood_percentage, args.runtime)
-    proc_seed = subprocess.Popen("python seed.py --ip 127.0.0.1 --port 6000 --logdir {}".format(
+    proc_seed = subprocess.Popen("python3 seed.py --ip 127.0.0.1 --port 6000 --logdir {}".format(
         log_dir), shell=True, preexec_fn=os.setsid)
     time.sleep(1)
     hash_attacker = 33
@@ -32,16 +32,16 @@ def run_experiment(network_delay, interarrival_time, flood_percentage, num_nodes
     proc_victim = dict()
 
     for i in range(num_nodes-num_victims-1):
-        proc_normal[i] = subprocess.Popen("python peer.py --draw --hash_power {}  --interarrival_time {} --net_delay {} --logdir {}".format(
+        proc_normal[i] = subprocess.Popen("python3 peer.py --draw --hash_power {}  --interarrival_time {} --net_delay {} --logdir {}".format(
             hash_normal, interarrival_time, network_delay, log_dir), shell=True, preexec_fn=os.setsid)
         # time.sleep(1) 
     # run victim node
     for i in range(num_victims):
-        proc_victim[i] = subprocess.Popen("python peer.py --draw --victim --hash_power {} --interarrival_time {} --net_delay {} --logdir {}".format(
+        proc_victim[i] = subprocess.Popen("python3 peer.py --draw --victim --hash_power {} --interarrival_time {} --net_delay {} --logdir {}".format(
             hash_victim, interarrival_time, network_delay, log_dir), shell=True, preexec_fn=os.setsid)
         # time.sleep(1)
     # run mal node
-    proc_attacker = subprocess.Popen("python peer.py  --draw --mal --hash_power {} --interarrival_time {} --net_delay {} --logdir {}".format(
+    proc_attacker = subprocess.Popen("python3 peer.py  --draw --mal --hash_power {} --interarrival_time {} --net_delay {} --logdir {}".format(
         hash_attacker, interarrival_time, network_delay, log_dir), shell=True, preexec_fn=os.setsid)
     # time.sleep(1)
 
