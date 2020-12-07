@@ -21,18 +21,17 @@ def get_mpu(root_path_dir):
             peer_info.append(port)
         peers_to_flood = peer_info
 
-    clean_file_list = []
-    for file in file_list:
+    peer_out_list = glob.glob(os.path.join(root_path_dir, '*PEER*.output'))
+    for file in peer_out_list:
         with open(file, 'r') as f:
             first_line = f.readlines()[0] # "Listening on port xyz"
             port_num = int(first_line.strip().split()[-1])
             if port_num in peers_to_flood:
-                continue
-            else:
-                clean_file_list.append(file)
+                PID = file.split('.')[0].split('_')[-1]
+                file_list = [bfile for bfile in file_list if (not PID in bfile)]
+
     mpu = 0
-    
-    for file in clean_file_list:
+    for file in file_list:
         block_db = pandas.read_csv(file, sep = '_', header = None)
         longest_chain = block_db[4].max()
         total_blocks = len(block_db)
