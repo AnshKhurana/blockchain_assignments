@@ -15,7 +15,7 @@ def make_plot_mpu():
     for fp in [30]:
         mpu = []
         avf = []
-        iat_list = [5]
+        iat_list = [1, 2, 4, 6, 8, 10]
         for iat in iat_list:
             expt_dir = 'expt_nd_0.5_iat_{}.0_fp_{}.0_runtime_10.0'.format(
                 iat, fp)
