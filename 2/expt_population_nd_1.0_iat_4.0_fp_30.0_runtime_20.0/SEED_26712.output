@@ -1,0 +1,29 @@
+Seed listening on 127.0.0.1:6000
+Received connection from 127.0.0.1:52392
+Received listening port info Listening Port:36347
+Received connection from 127.0.0.1:52394
+Received listening port info Listening Port:38333
+Received connection from 127.0.0.1:52398
+Received listening port info Listening Port:43803
+Received connection from 127.0.0.1:52400
+Received listening port info Listening Port:33527
+Received connection from 127.0.0.1:52412
+Received listening port info Listening Port:34259
+Received connection from 127.0.0.1:52422
+Received listening port info Listening Port:37007
+Received connection from 127.0.0.1:52432
+Received listening port info Listening Port:38083
+Received connection from 127.0.0.1:52442
+Received listening port info Listening Port:39839
+Received connection from 127.0.0.1:52452
+Received listening port info Listening Port:46127
+Received connection from 127.0.0.1:52462
+Received listening port info Listening Port:40823
+Receiving Dead node message Dead Node:127.0.0.1:40823:2020-12-06 03:56:28.227749:0.0.0.0
+[('127.0.0.1', 36347), ('127.0.0.1', 38333), ('127.0.0.1', 43803), ('127.0.0.1', 33527), ('127.0.0.1', 34259), ('127.0.0.1', 37007), ('127.0.0.1', 38083), ('127.0.0.1', 39839), ('127.0.0.1', 46127)]
+[('127.0.0.1', 40823)]
+Receiving Dead node message Dead Node:127.0.0.1:34259:2020-12-06 03:56:28.228757:0.0.0.0
+[('127.0.0.1', 36347), ('127.0.0.1', 38333), ('127.0.0.1', 43803), ('127.0.0.1', 33527), ('127.0.0.1', 37007), ('127.0.0.1', 38083), ('127.0.0.1', 39839), ('127.0.0.1', 46127)]
+[('127.0.0.1', 40823), ('127.0.0.1', 34259)]
+closing connection to 127.0.0.1:52462
+closing connection to 127.0.0.1:52412

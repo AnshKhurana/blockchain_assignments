@@ -28,7 +28,7 @@ DEBUG_MODE = True  # Change to false for submission
 LIVENESS_DEBUG_MODE = False  # Change to false for submission
 PRINT_FLOODS = False  # Change to false for submission
 
-validation_delay = datetime.timedelta(milliseconds=5)
+validation_delay = datetime.timedelta(milliseconds=2)
 
 dead_node_msg = "Dead Node:{}:{}:{}:{}~"
 listening_port_msg = "Listening Port:{}~"

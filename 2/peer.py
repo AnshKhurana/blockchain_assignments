@@ -122,6 +122,8 @@ class Peer:
 
         self.prev_msg = ''  # This is needed if while receiving, some msg comes only halfway
 
+        self.processing_resume = datetime.datetime.now(tz=None)
+
     def get_delayed_timestamp(self):
         return datetime.timedelta(seconds=self.net_delay_mean) + datetime.datetime.now(tz=None)
 
@@ -145,31 +147,35 @@ class Peer:
                 self.mine_timestamp = current_time
                 self.mine_delay = self.miner.waiting_time()
 
-            # Non-empty pending queue -> stop mining, process the pending_queue and broadcast valid blocks
-            if not self.miner.pending_queue.empty():
-                block_strings, delay = self.miner.process_pending_queue()
-                for block_string, send_not_ip, send_not_port in block_strings:
+            # Delay added in validation of blocks is complete
+            if datetime.datetime.now(tz=None) >= self.processing_resume:
+                # Non-empty pending queue -> stop mining, process the pending_queue and broadcast valid blocks
+                if not self.miner.pending_queue.empty():
+                    block_strings, delay = self.miner.process_pending_queue()
+                    self.processing_resume = current_time + delay
+                    for block_string, send_not_ip, send_not_port in block_strings:
+                        self.peer_broadcast_queue.append(
+                            (block_msg.format(block_string), send_not_ip, send_not_port))
+                        message_hash = sha256(
+                            block_string.encode(encoding)).hexdigest()
+                        self.message_list[message_hash] = True
+                    current_time = datetime.datetime.now(tz=None)
+                    self.mine_timestamp = self.processing_resume
+                    self.mine_delay = self.miner.waiting_time()
+
+            if datetime.datetime.now(tz=None) >= self.processing_resume:
+                # Block generation and broadcasting
+                if self.start_mining and (current_time - self.mine_timestamp) > self.mine_delay:
+                    block_string, block_hash = self.miner.mine()
+                    self.printer.print(
+                        f"Generated a block: {block_string} with hash {block_hash}", DEBUG_MODE)
                     self.peer_broadcast_queue.append(
-                        (block_msg.format(block_string), send_not_ip, send_not_port))
+                        (block_msg.format(block_string), None, None))
                     message_hash = sha256(
                         block_string.encode(encoding)).hexdigest()
                     self.message_list[message_hash] = True
-                current_time = datetime.datetime.now(tz=None)
-                self.mine_timestamp = current_time
-                self.mine_delay = self.miner.waiting_time() + delay
-
-            # Block generation and broadcasting
-            if self.start_mining and (current_time - self.mine_timestamp) > self.mine_delay:
-                block_string, block_hash = self.miner.mine()
-                self.printer.print(
-                    f"Generated a block: {block_string} with hash {block_hash}", DEBUG_MODE)
-                self.peer_broadcast_queue.append(
-                    (block_msg.format(block_string), None, None))
-                message_hash = sha256(
-                    block_string.encode(encoding)).hexdigest()
-                self.message_list[message_hash] = True
-                self.mine_timestamp = current_time
-                self.mine_delay = self.miner.waiting_time()
+                    self.mine_timestamp = current_time
+                    self.mine_delay = self.miner.waiting_time()
 
             events = self.sel.select(timeout=None)
 
