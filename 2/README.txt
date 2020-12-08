@@ -1,8 +1,20 @@
 # Assumptions:
 
+## Database for chains
+The chain at each node is stored in txt files BLOCK_DB_PID.output
+
+## Continuous Flooding:
+
+
 ## Network delays:
+Network delay has been set to 0.5 for all the experiments. These have been introduced artificially.
+@Kushagra explain why
+
+## Verification time:
+@Kushagra explain why
 
 ## Plotting runs:
+IAT = [1, 2, 4, 6, 8, 10]
 
 
 # Instructions for running the code:
@@ -47,7 +59,7 @@ optional arguments:
   --victim              Set to make this node a victim of flooding
 ```
 
-
-
 # References:
-
+1. http://www.dabeaz.com/python/PythonNetBinder.pdf
+2. https://realpython.com/python-sockets/
+3. Lecture Notes
