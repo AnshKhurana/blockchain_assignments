@@ -1,0 +1,139 @@
+Listening on port 54440
+peers_to_flood are []
+connecting to seed 127.0.0.1:6000
+Sending listening info to 127.0.0.1:6000
+Received peer list from 127.0.0.1:6000 []
+Connecting to peers
+No other peers in the network
+Received Peer List is []
+sent connection request to all
+Number of out neighbours: 0
+Received connection from 127.0.0.1:54443
+Sending listening info to 127.0.0.1:54443
+Sending message Height:0 to 127.0.0.1:54443
+Sending Sync Complete to 127.0.0.1:54443
+Received information about listening port from 127.0.0.1:54443 Listening Port:54439
+Received connection from 127.0.0.1:54447
+Sending listening info to 127.0.0.1:54447
+Sending message Height:0 to 127.0.0.1:54447
+Sending Sync Complete to 127.0.0.1:54447
+Received information about listening port from 127.0.0.1:54447 Listening Port:54444
+Received connection from 127.0.0.1:54450
+Received information about listening port from 127.0.0.1:54450 Listening Port:54448
+Sending listening info to 127.0.0.1:54450
+Sending message Height:0 to 127.0.0.1:54450
+Sending Sync Complete to 127.0.0.1:54450
+Received connection from 127.0.0.1:54457
+Sending listening info to 127.0.0.1:54457
+Sending message Height:0 to 127.0.0.1:54457
+Sending Sync Complete to 127.0.0.1:54457
+Received information about listening port from 127.0.0.1:54457 Listening Port:54453
+Received connection from 127.0.0.1:54465
+Received information about listening port from 127.0.0.1:54465 Listening Port:54460
+Sending listening info to 127.0.0.1:54465
+Sending message Height:0 to 127.0.0.1:54465
+Sending Sync Complete to 127.0.0.1:54465
+Received connection from 127.0.0.1:54482
+Sending listening info to 127.0.0.1:54482
+Sending message Height:0 to 127.0.0.1:54482
+Sending Sync Complete to 127.0.0.1:54482
+Received information about listening port from 127.0.0.1:54482 Listening Port:54469
+Received connection from 127.0.0.1:54487
+Sending listening info to 127.0.0.1:54487
+Sending message Height:0 to 127.0.0.1:54487
+Sending Sync Complete to 127.0.0.1:54487
+Received information about listening port from 127.0.0.1:54487 Listening Port:54478
+Received new block: 9e1c_0000_1605030875_1 with hash e521 from 127.0.0.1:54450 at 2020-11-10 23:24:37.975455
+Sending block: 9e1c_0000_1605030875_1 to 127.0.0.1:54443
+Sending block: 9e1c_0000_1605030875_1 to 127.0.0.1:54447
+Sending block: 9e1c_0000_1605030875_1 to 127.0.0.1:54457
+Sending block: 9e1c_0000_1605030875_1 to 127.0.0.1:54465
+Sending block: 9e1c_0000_1605030875_1 to 127.0.0.1:54482
+Sending block: 9e1c_0000_1605030875_1 to 127.0.0.1:54487
+Received stale block 9e1c_0000_1605030875_1 from 127.0.0.1:54443.
+Received stale block 9e1c_0000_1605030875_1 from 127.0.0.1:54447.
+Received stale block 9e1c_0000_1605030875_1 from 127.0.0.1:54457.
+Received stale block 9e1c_0000_1605030875_1 from 127.0.0.1:54465.
+Received stale block 9e1c_0000_1605030875_1 from 127.0.0.1:54482.
+Received stale block 9e1c_0000_1605030875_1 from 127.0.0.1:54487.
+Received new block: e521_0000_1605030882_2 with hash 26c4 from 127.0.0.1:54457 at 2020-11-10 23:24:43.938059
+Sending block: e521_0000_1605030882_2 to 127.0.0.1:54487
+Sending block: e521_0000_1605030882_2 to 127.0.0.1:54443
+Sending block: e521_0000_1605030882_2 to 127.0.0.1:54447
+Sending block: e521_0000_1605030882_2 to 127.0.0.1:54450
+Sending block: e521_0000_1605030882_2 to 127.0.0.1:54465
+Sending block: e521_0000_1605030882_2 to 127.0.0.1:54482
+Received stale block e521_0000_1605030882_2 from 127.0.0.1:54465.
+Received stale block e521_0000_1605030882_2 from 127.0.0.1:54447.
+Received stale block e521_0000_1605030882_2 from 127.0.0.1:54450.
+Received stale block e521_0000_1605030882_2 from 127.0.0.1:54443.
+Received stale block e521_0000_1605030882_2 from 127.0.0.1:54482.
+Received new block: 26c4_0000_1605030887_3 with hash 0456 from 127.0.0.1:54465 at 2020-11-10 23:24:48.462912
+Sending block: 26c4_0000_1605030887_3 to 127.0.0.1:54487
+Sending block: 26c4_0000_1605030887_3 to 127.0.0.1:54443
+Sending block: 26c4_0000_1605030887_3 to 127.0.0.1:54447
+Sending block: 26c4_0000_1605030887_3 to 127.0.0.1:54450
+Sending block: 26c4_0000_1605030887_3 to 127.0.0.1:54457
+Sending block: 26c4_0000_1605030887_3 to 127.0.0.1:54482
+Received stale block 26c4_0000_1605030887_3 from 127.0.0.1:54450.
+Received stale block 26c4_0000_1605030887_3 from 127.0.0.1:54457.
+Received stale block 26c4_0000_1605030887_3 from 127.0.0.1:54447.
+Received stale block 26c4_0000_1605030887_3 from 127.0.0.1:54443.
+Received stale block 26c4_0000_1605030887_3 from 127.0.0.1:54487.
+Received stale block 26c4_0000_1605030887_3 from 127.0.0.1:54482.
+Received new block: 0456_0000_1605030891_4 with hash 0125 from 127.0.0.1:54457 at 2020-11-10 23:24:53.521136
+Sending block: 0456_0000_1605030891_4 to 127.0.0.1:54487
+Sending block: 0456_0000_1605030891_4 to 127.0.0.1:54443
+Sending block: 0456_0000_1605030891_4 to 127.0.0.1:54447
+Sending block: 0456_0000_1605030891_4 to 127.0.0.1:54450
+Sending block: 0456_0000_1605030891_4 to 127.0.0.1:54465
+Sending block: 0456_0000_1605030891_4 to 127.0.0.1:54482
+Received stale block 0456_0000_1605030891_4 from 127.0.0.1:54447.
+Received stale block 0456_0000_1605030891_4 from 127.0.0.1:54450.
+Received stale block 0456_0000_1605030891_4 from 127.0.0.1:54443.
+Received stale block 0456_0000_1605030891_4 from 127.0.0.1:54465.
+Received stale block 0456_0000_1605030891_4 from 127.0.0.1:54482.
+Received stale block 0456_0000_1605030891_4 from 127.0.0.1:54487.
+Received new block: 0125_0000_1605030903_5 with hash ccb8 from 127.0.0.1:54457 at 2020-11-10 23:25:05.723621
+Sending block: 0125_0000_1605030903_5 to 127.0.0.1:54482
+Sending block: 0125_0000_1605030903_5 to 127.0.0.1:54487
+Sending block: 0125_0000_1605030903_5 to 127.0.0.1:54443
+Sending block: 0125_0000_1605030903_5 to 127.0.0.1:54447
+Sending block: 0125_0000_1605030903_5 to 127.0.0.1:54450
+Sending block: 0125_0000_1605030903_5 to 127.0.0.1:54465
+Received stale block 0125_0000_1605030903_5 from 127.0.0.1:54450.
+Received stale block 0125_0000_1605030903_5 from 127.0.0.1:54443.
+Received stale block 0125_0000_1605030903_5 from 127.0.0.1:54447.
+Received stale block 0125_0000_1605030903_5 from 127.0.0.1:54465.
+Received stale block 0125_0000_1605030903_5 from 127.0.0.1:54487.
+Received stale block 0125_0000_1605030903_5 from 127.0.0.1:54482.
+Received new block: ccb8_0000_1605030913_6 with hash 0ede from 127.0.0.1:54447 at 2020-11-10 23:25:14.667053
+Sending block: ccb8_0000_1605030913_6 to 127.0.0.1:54465
+Sending block: ccb8_0000_1605030913_6 to 127.0.0.1:54482
+Sending block: ccb8_0000_1605030913_6 to 127.0.0.1:54487
+Sending block: ccb8_0000_1605030913_6 to 127.0.0.1:54443
+Sending block: ccb8_0000_1605030913_6 to 127.0.0.1:54450
+Sending block: ccb8_0000_1605030913_6 to 127.0.0.1:54457
+Received stale block ccb8_0000_1605030913_6 from 127.0.0.1:54465.
+Received stale block ccb8_0000_1605030913_6 from 127.0.0.1:54482.
+Received stale block ccb8_0000_1605030913_6 from 127.0.0.1:54443.
+Received stale block ccb8_0000_1605030913_6 from 127.0.0.1:54457.
+Received stale block ccb8_0000_1605030913_6 from 127.0.0.1:54450.
+Received new block: 0ede_0000_1605030927_7 with hash f56c from 127.0.0.1:54465 at 2020-11-10 23:25:30.281440
+Sending block: 0ede_0000_1605030927_7 to 127.0.0.1:54482
+Sending block: 0ede_0000_1605030927_7 to 127.0.0.1:54487
+Sending block: 0ede_0000_1605030927_7 to 127.0.0.1:54443
+Sending block: 0ede_0000_1605030927_7 to 127.0.0.1:54447
+Sending block: 0ede_0000_1605030927_7 to 127.0.0.1:54450
+Sending block: 0ede_0000_1605030927_7 to 127.0.0.1:54457
+Received stale block 0ede_0000_1605030927_7 from 127.0.0.1:54482.
+Received stale block 0ede_0000_1605030927_7 from 127.0.0.1:54447.
+Received stale block 0ede_0000_1605030927_7 from 127.0.0.1:54443.
+Received stale block 0ede_0000_1605030927_7 from 127.0.0.1:54457.
+Received stale block 0ede_0000_1605030927_7 from 127.0.0.1:54450.
+Received stale block 0ede_0000_1605030927_7 from 127.0.0.1:54487.
+Closing connection to peer 127.0.0.1:54450
+Reporting Dead Node:127.0.0.1:54448:2020-11-10 23:25:36.093034:0.0.0.0
+Reporting dead node message to 127.0.0.1:6000 Dead Node:127.0.0.1:54448:2020-11-10 23:25:36.093034:0.0.0.0
+Closing connection to peer 127.0.0.1:54465
+Reporting Dead Node:127.0.0.1:54460:2020-11-10 23:25:40.498892:0.0.0.0
