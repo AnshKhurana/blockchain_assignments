@@ -34,7 +34,7 @@ def make_plot_combined():
         mpu_v = []
         avf_v = []
         for iat in iat_list:
-            expt_dir = 'Final_Onkar_expts/expt_population_nd_0.5_iat_{}.0_fp_{}.0_runtime_20.0'.format(
+            expt_dir = 'experiment_2/expt_population_nd_0.5_iat_{}.0_fp_{}.0_runtime_20.0'.format(
                 iat, fp)
             print("For experiment: ", expt_dir)
             mpu_v.append(get_mpu(expt_dir))
