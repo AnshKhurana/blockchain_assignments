@@ -24,7 +24,7 @@ import matplotlib.pyplot as plt
 MAX_TRIES = 3  # maximum 3 timeouts for liveness testing
 read_mask = selectors.EVENT_READ
 read_write_mask = selectors.EVENT_READ | selectors.EVENT_WRITE
-DEBUG_MODE = True  # Change to false for submission
+DEBUG_MODE = False  # Change to false for submission
 LIVENESS_DEBUG_MODE = False  # Change to false for submission
 PRINT_FLOODS = False  # Change to false for submission
 
