@@ -1,0 +1,45 @@
+Listening on port 53417
+connecting to seed 127.0.0.1:6001
+connecting to seed 127.0.0.1:6000
+Sending listening info to 127.0.0.1:6001
+Sending listening info to 127.0.0.1:6000
+Received peer list from 127.0.0.1:6001 [['127.0.0.1', 53409]]
+Received peer list from 127.0.0.1:6000 [['127.0.0.1', 53409]]
+Connecting to peers
+Received Peer List is [('127.0.0.1', 53409)]
+connecting to peer 127.0.0.1:53409
+sent connection request to all
+Number of out neighbours: 1
+Sending listening info to 127.0.0.1:53409
+Received information about listening port from 127.0.0.1:53409 Listening Port:53409
+Received k = 2 from 127.0.0.1:53409 via: Height:2
+Received new block: 9e1c_0000_1604762391_1 with hash ad71 from 127.0.0.1:53409 at 2020-11-07 20:49:55.137829
+Received new block: ad71_0000_1604762393_2 with hash ed46 from 127.0.0.1:53409 at 2020-11-07 20:49:55.347017
+Received Sync Complete from 127.0.0.1:53409 via: Sync Complete
+Generated a block: ed46_0000_1604762400_3 with hash 75ca
+Sending block: ed46_0000_1604762400_3 to 127.0.0.1:53409
+Generated a block: 75ca_0000_1604762400_4 with hash 5be2
+Sending block: 75ca_0000_1604762400_4 to 127.0.0.1:53409
+Generated a block: 5be2_0000_1604762406_5 with hash bbc2
+Sending block: 5be2_0000_1604762406_5 to 127.0.0.1:53409
+Received new block: 5be2_0000_1604762403_5 with hash f82b from 127.0.0.1:53409 at 2020-11-07 20:50:06.929475
+Generated a block: bbc2_0000_1604762408_6 with hash cec2
+Sending block: bbc2_0000_1604762408_6 to 127.0.0.1:53409
+Received new block: f82b_0000_1604762406_6 with hash e1e6 from 127.0.0.1:53409 at 2020-11-07 20:50:09.394038
+Received new block: e1e6_0000_1604762410_7 with hash 7bb7 from 127.0.0.1:53409 at 2020-11-07 20:50:13.966222
+Generated a block: 7bb7_0000_1604762415_8 with hash f108
+Sending block: 7bb7_0000_1604762415_8 to 127.0.0.1:53409
+Received new block: f108_0000_1604762421_9 with hash 450b from 127.0.0.1:53409 at 2020-11-07 20:50:24.431491
+Received new block: 450b_0000_1604762424_10 with hash 4552 from 127.0.0.1:53409 at 2020-11-07 20:50:27.076397
+Received new block: 4552_0000_1604762425_11 with hash e870 from 127.0.0.1:53409 at 2020-11-07 20:50:28.505827
+Received new block: e870_0000_1604762426_12 with hash 9699 from 127.0.0.1:53409 at 2020-11-07 20:50:29.194917
+Generated a block: 9699_0000_1604762432_13 with hash b5ed
+Sending block: 9699_0000_1604762432_13 to 127.0.0.1:53409
+Received new block: 9699_0000_1604762430_13 with hash b484 from 127.0.0.1:53409 at 2020-11-07 20:50:33.748296
+Received new block: b484_0000_1604762432_14 with hash d353 from 127.0.0.1:53409 at 2020-11-07 20:50:35.677426
+Generated a block: d353_0000_1604762437_15 with hash 43e5
+Sending block: d353_0000_1604762437_15 to 127.0.0.1:53409
+Generated a block: 43e5_0000_1604762440_16 with hash 6767
+Sending block: 43e5_0000_1604762440_16 to 127.0.0.1:53409
+Generated a block: 6767_0000_1604762440_17 with hash ea6a
+Sending block: 6767_0000_1604762440_17 to 127.0.0.1:53409

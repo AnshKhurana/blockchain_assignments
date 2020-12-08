@@ -1,0 +1,26 @@
+Listening on port 54487
+connecting to seed 127.0.0.1:6000
+Sending listening info to 127.0.0.1:6000
+Received peer list from 127.0.0.1:6000 [['127.0.0.1', 54483]]
+Connecting to peers
+Received Peer List is [('127.0.0.1', 54483)]
+connecting to peer 127.0.0.1:54483
+sent connection request to all
+Number of out neighbours: 1
+Sending listening info to 127.0.0.1:54483
+Received information about listening port from 127.0.0.1:54483 Listening Port:54483
+Received k = 0 from 127.0.0.1:54483 via: Height:0
+Received Sync Complete from 127.0.0.1:54483 via: Sync Complete
+Received new block: 9e1c_0000_1604768019_1 with hash ee3d from 127.0.0.1:54483 at 2020-11-07 22:23:41.905262
+Generated a block: 9e1c_0000_1604768025_1 with hash 1af4
+Sending block: 9e1c_0000_1604768025_1 to 127.0.0.1:54483
+Generated a block: 9e1c_0000_1604768026_1 with hash fe0a
+Sending block: 9e1c_0000_1604768026_1 to 127.0.0.1:54483
+Received new block: 9e1c_0000_1604768024_1 with hash a5c0 from 127.0.0.1:54483 at 2020-11-07 22:23:46.418296
+Generated a block: 9e1c_0000_1604768029_1 with hash 014f
+Sending block: 9e1c_0000_1604768029_1 to 127.0.0.1:54483
+Generated a block: 9e1c_0000_1604768032_1 with hash dc64
+Sending block: 9e1c_0000_1604768032_1 to 127.0.0.1:54483
+Received stale block 9e1c_0000_1604768032_1 from 127.0.0.1:54483.
+Received new block: 9e1c_0000_1604768034_1 with hash b030 from 127.0.0.1:54483 at 2020-11-07 22:23:56.185779
+Received new block: 9e1c_0000_1604768035_1 with hash d84a from 127.0.0.1:54483 at 2020-11-07 22:23:57.350194

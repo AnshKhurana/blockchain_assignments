@@ -1,15 +1,42 @@
-## Steps to Run
-```
-Assignment solved by Onkar Deshpande, Kushagra Juneja, Ansh Khurana
-# On seed node
-$ python seed.py --ip <ip_of_seed> --port <port_of_seed>
+Assumptions:
 
-# On peer node, config.txt must be in the same directory
-$ python3 peer.py --hash_power 50 --interarrival_time 2
+Network delays:
 
-Here, hash_power is in percentage, interarrival_time is the global effective interarrival_time, seed denotes the random seed
+Plotting runs:
 
-# Clarifications
-1. When a new peer joins the network, it syncs with all the peers connected to it and asks them for their longest chain. Then it selects the longest chain amongst those shared by the peers as its chain and mines on that. 
 
-```
+Instructions for running the code:
+
+Individual seed and peer nodes can be launched using the following commands:
+
+python seed.py [-h] --ip IP --port PORT [--logdir LOGDIR]
+
+optional arguments:
+  -h, --help       show this help message and exit
+  --ip IP          ip address its running on
+  --port PORT      port number its running on
+  --logdir LOGDIR  path to save all experiment related files
+
+python peer.py [-h] --interarrival_time INTERARRIVAL_TIME --hash_power
+               HASH_POWER --net_delay NET_DELAY [--draw] [--logdir LOGDIR]
+               [--mal] [--victim]
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --interarrival_time INTERARRIVAL_TIME
+                        Set interrarival time for generation of blocks
+  --hash_power HASH_POWER
+                        Set hashing power of this node
+  --net_delay NET_DELAY
+                        Set network delay faced by this node in the P2P
+                        network
+  --draw                Set to draw the blockchain tree
+  --logdir LOGDIR       path to save all experiment related files
+  --mal                 Set to make this node an attacker
+  --victim              Set to make this node a victim of flooding
+
+
+
+
+References:
+

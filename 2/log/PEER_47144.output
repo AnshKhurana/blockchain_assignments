@@ -1,0 +1,27 @@
+Listening on port 54242
+connecting to seed 127.0.0.1:6000
+Sending listening info to 127.0.0.1:6000
+Received peer list from 127.0.0.1:6000 []
+Connecting to peers
+No other peers in the network
+Received Peer List is []
+sent connection request to all
+Number of out neighbours: 0
+Generated a block: 9e1c_0000_1604767011_1 with hash 94f5
+Received connection from 127.0.0.1:54247
+Received information about listening port from 127.0.0.1:54247 Listening Port:54245
+Sending listening info to 127.0.0.1:54247
+Sending message Height:1 to 127.0.0.1:54247
+Syncing my block: 9e1c_0000_1604767011_1 with 127.0.0.1:54247
+Sending Sync Complete to 127.0.0.1:54247
+Generated a block: 94f5_0000_1604767013_2 with hash 4f65
+Sending block: 94f5_0000_1604767013_2 to 127.0.0.1:54247
+Generated a block: 4f65_0000_1604767015_3 with hash a9c6
+Sending block: 4f65_0000_1604767015_3 to 127.0.0.1:54247
+Generated a block: a9c6_0000_1604767015_4 with hash 8043
+Sending block: a9c6_0000_1604767015_4 to 127.0.0.1:54247
+Generated a block: 8043_0000_1604767021_5 with hash 51de
+Sending block: 8043_0000_1604767021_5 to 127.0.0.1:54247
+Closing connection to peer 127.0.0.1:54247
+Reporting Dead Node:127.0.0.1:54245:2020-11-07 22:07:03.432473:0.0.0.0
+Reporting dead node message to 127.0.0.1:6000 Dead Node:127.0.0.1:54245:2020-11-07 22:07:03.432473:0.0.0.0

@@ -1,0 +1,14 @@
+Listening on port 54337
+connecting to seed 127.0.0.1:6000
+Sending listening info to 127.0.0.1:6000
+Received peer list from 127.0.0.1:6000 [['127.0.0.1', 54331], ['127.0.0.1', 54334]]
+Connecting to peers
+Received Peer List is [('127.0.0.1', 54334), ('127.0.0.1', 54331)]
+connecting to peer 127.0.0.1:54331
+connecting to peer 127.0.0.1:54334
+sent connection request to all
+Number of out neighbours: 2
+Closing connection to peer 127.0.0.1:54331
+Reporting Dead Node:127.0.0.1:54331:2020-11-07 22:15:33.431658:0.0.0.0
+Sending listening info to 127.0.0.1:54331
+Closing connection to peer 127.0.0.1:54331

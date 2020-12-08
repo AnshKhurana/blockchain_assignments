@@ -1,0 +1,17 @@
+Listening on port 54245
+connecting to seed 127.0.0.1:6000
+Sending listening info to 127.0.0.1:6000
+Received peer list from 127.0.0.1:6000 [['127.0.0.1', 54242]]
+Connecting to peers
+Received Peer List is [('127.0.0.1', 54242)]
+connecting to peer 127.0.0.1:54242
+sent connection request to all
+Number of out neighbours: 1
+Sending listening info to 127.0.0.1:54242
+Received information about listening port from 127.0.0.1:54242 Listening Port:54242
+Received k = 1 from 127.0.0.1:54242 via: Height:1
+Received new block: 9e1c_0000_1604767011_1 with hash 94f5 from 127.0.0.1:54242 at 2020-11-07 22:06:52.071859
+Received Sync Complete from 127.0.0.1:54242 via: Sync Complete
+Received new block: 94f5_0000_1604767013_2 with hash 4f65 from 127.0.0.1:54242 at 2020-11-07 22:06:55.345639
+Received new block: 4f65_0000_1604767015_3 with hash a9c6 from 127.0.0.1:54242 at 2020-11-07 22:06:57.031469
+Received new block: a9c6_0000_1604767015_4 with hash 8043 from 127.0.0.1:54242 at 2020-11-07 22:06:57.259087

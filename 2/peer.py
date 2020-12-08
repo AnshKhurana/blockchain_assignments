@@ -25,15 +25,15 @@ MAX_CONNECTED_PEERS = 4
 LIVENESS_DELAY = 13  # 13 seconds for each message
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--interarrival_time', type=float, required=True)
-parser.add_argument('--hash_power', type=float, required=True)
+parser.add_argument('--interarrival_time', type=float, required=True, help="Set interrarival time for generation of blocks")
+parser.add_argument('--hash_power', type=float, required=True,  help="Set hashing power of this node")
 # parser.add_argument('--seed', type=int, required=True)
-parser.add_argument('--net_delay', type=float, required=True)
-parser.add_argument('--draw', action='store_true')
+parser.add_argument('--net_delay', type=float, required=True, help="Set network delay faced by this node in the P2P network")
+parser.add_argument('--draw', action='store_true', help="Set to draw the blockchain tree")
 parser.add_argument('--logdir', type=str,
                     help='path to save all experiment related files', default='./log')
-parser.add_argument('--mal', action='store_true')
-parser.add_argument('--victim', action='store_true')
+parser.add_argument('--mal', action='store_true', help="Set to make this node an attacker")
+parser.add_argument('--victim', action='store_true', help="Set to make this node a victim of flooding")
 
 
 class Peer:

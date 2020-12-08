@@ -1,0 +1,16 @@
+Listening on port 54686
+connecting to seed 127.0.0.1:6000
+Sending listening info to 127.0.0.1:6000
+Received peer list from 127.0.0.1:6000 [['127.0.0.1', 54684]]
+Connecting to peers
+Received Peer List is [('127.0.0.1', 54684)]
+connecting to peer 127.0.0.1:54684
+sent connection request to all
+Number of out neighbours: 1
+Sending listening info to 127.0.0.1:54684
+Received information about listening port from 127.0.0.1:54684 Listening Port:54684
+Received k = 0 from 127.0.0.1:54684 via: Height:0
+Received Sync Complete from 127.0.0.1:54684 via: Sync Complete
+Closing connection to peer 127.0.0.1:54684
+Reporting Dead Node:127.0.0.1:54684:2020-11-07 22:36:15.198553:0.0.0.0
+Reporting dead node message to 127.0.0.1:6000 Dead Node:127.0.0.1:54684:2020-11-07 22:36:15.198553:0.0.0.0

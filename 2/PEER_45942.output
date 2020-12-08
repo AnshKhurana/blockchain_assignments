@@ -1,0 +1,54 @@
+Listening on port 53409
+connecting to seed 127.0.0.1:6001
+connecting to seed 127.0.0.1:6000
+Sending listening info to 127.0.0.1:6001
+Sending listening info to 127.0.0.1:6000
+Received peer list from 127.0.0.1:6001 []
+Received peer list from 127.0.0.1:6000 []
+Connecting to peers
+No other peers in the network
+Received Peer List is []
+sent connection request to all
+Number of out neighbours: 0
+Generated a block: 9e1c_0000_1604762391_1 with hash ad71
+Generated a block: ad71_0000_1604762393_2 with hash ed46
+Received connection from 127.0.0.1:53420
+Received information about listening port from 127.0.0.1:53420 Listening Port:53417
+Sending listening info to 127.0.0.1:53420
+Sending message Height:2 to 127.0.0.1:53420
+Syncing my block: 9e1c_0000_1604762391_1 with 127.0.0.1:53420
+Syncing my block: ad71_0000_1604762393_2 with 127.0.0.1:53420
+Sending Sync Complete to 127.0.0.1:53420
+Received new block: ed46_0000_1604762400_3 with hash 75ca from 127.0.0.1:53420 at 2020-11-07 20:50:03.493225
+Received new block: 75ca_0000_1604762400_4 with hash 5be2 from 127.0.0.1:53420 at 2020-11-07 20:50:03.816951
+Generated a block: 5be2_0000_1604762403_5 with hash f82b
+Sending block: 5be2_0000_1604762403_5 to 127.0.0.1:53420
+Generated a block: f82b_0000_1604762406_6 with hash e1e6
+Sending block: f82b_0000_1604762406_6 to 127.0.0.1:53420
+Received new block: 5be2_0000_1604762406_5 with hash bbc2 from 127.0.0.1:53420 at 2020-11-07 20:50:09.231840
+Generated a block: e1e6_0000_1604762410_7 with hash 7bb7
+Sending block: e1e6_0000_1604762410_7 to 127.0.0.1:53420
+Received new block: bbc2_0000_1604762408_6 with hash cec2 from 127.0.0.1:53420 at 2020-11-07 20:50:11.288730
+Received new block: 7bb7_0000_1604762415_8 with hash f108 from 127.0.0.1:53420 at 2020-11-07 20:50:18.737067
+Generated a block: f108_0000_1604762421_9 with hash 450b
+Sending block: f108_0000_1604762421_9 to 127.0.0.1:53420
+Generated a block: 450b_0000_1604762424_10 with hash 4552
+Sending block: 450b_0000_1604762424_10 to 127.0.0.1:53420
+Generated a block: 4552_0000_1604762425_11 with hash e870
+Sending block: 4552_0000_1604762425_11 to 127.0.0.1:53420
+Generated a block: e870_0000_1604762426_12 with hash 9699
+Sending block: e870_0000_1604762426_12 to 127.0.0.1:53420
+Generated a block: 9699_0000_1604762430_13 with hash b484
+Sending block: 9699_0000_1604762430_13 to 127.0.0.1:53420
+Generated a block: b484_0000_1604762432_14 with hash d353
+Sending block: b484_0000_1604762432_14 to 127.0.0.1:53420
+Received new block: 9699_0000_1604762432_13 with hash b5ed from 127.0.0.1:53420 at 2020-11-07 20:50:35.533652
+Generated a block: d353_0000_1604762440_15 with hash 048c
+Sending block: d353_0000_1604762440_15 to 127.0.0.1:53420
+Received new block: d353_0000_1604762437_15 with hash 43e5 from 127.0.0.1:53420 at 2020-11-07 20:50:41.059301
+Generated a block: 048c_0000_1604762441_16 with hash a233
+Sending block: 048c_0000_1604762441_16 to 127.0.0.1:53420
+Closing connection to peer 127.0.0.1:53420
+Reporting Dead Node:127.0.0.1:53417:2020-11-07 20:50:42.808236:0.0.0.0
+Reporting dead node message to 127.0.0.1:6001 Dead Node:127.0.0.1:53417:2020-11-07 20:50:42.808236:0.0.0.0
+Reporting dead node message to 127.0.0.1:6000 Dead Node:127.0.0.1:53417:2020-11-07 20:50:42.808236:0.0.0.0

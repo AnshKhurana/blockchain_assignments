@@ -62,4 +62,4 @@ def make_plot_single():
 
 
 if __name__ == "__main__":
-    make_plot()
+    make_plot_combined()

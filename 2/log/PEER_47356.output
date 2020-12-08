@@ -1,0 +1,17 @@
+Listening on port 54351
+connecting to seed 127.0.0.1:6000
+Sending listening info to 127.0.0.1:6000
+Received peer list from 127.0.0.1:6000 []
+Connecting to peers
+No other peers in the network
+Received Peer List is []
+sent connection request to all
+Number of out neighbours: 0
+Received connection from 127.0.0.1:54355
+Received information about listening port from 127.0.0.1:54355 Listening Port:54353
+Sending listening info to 127.0.0.1:54355
+Sending message Height:0 to 127.0.0.1:54355
+Sending Sync Complete to 127.0.0.1:54355
+Closing connection to peer 127.0.0.1:54355
+Reporting Dead Node:127.0.0.1:54353:2020-11-07 22:16:02.339369:0.0.0.0
+Reporting dead node message to 127.0.0.1:6000 Dead Node:127.0.0.1:54353:2020-11-07 22:16:02.339369:0.0.0.0

@@ -1,0 +1,41 @@
+Listening on port 56211
+connecting to seed 127.0.0.1:6000
+Sending listening info to 127.0.0.1:6000
+Received peer list from 127.0.0.1:6000 []
+Connecting to peers
+No other peers in the network
+Received Peer List is []
+sent connection request to all
+Number of out neighbours: 0
+Generated a block: 9e1c_0000_1604771763_1 with hash a71a
+Generated a block: a71a_0000_1604771763_2 with hash 1381
+Generated a block: 1381_0000_1604771764_3 with hash 3e04
+Generated a block: 3e04_0000_1604771768_4 with hash db8c
+Generated a block: db8c_0000_1604771770_5 with hash 14eb
+Generated a block: 14eb_0000_1604771777_6 with hash 8a3e
+Received connection from 127.0.0.1:56216
+Received information about listening port from 127.0.0.1:56216 Listening Port:56214
+Sending listening info to 127.0.0.1:56216
+Sending message Height:6 to 127.0.0.1:56216
+Syncing my block: 9e1c_0000_1604771763_1 with 127.0.0.1:56216
+Syncing my block: a71a_0000_1604771763_2 with 127.0.0.1:56216
+Syncing my block: 1381_0000_1604771764_3 with 127.0.0.1:56216
+Syncing my block: 3e04_0000_1604771768_4 with 127.0.0.1:56216
+Syncing my block: db8c_0000_1604771770_5 with 127.0.0.1:56216
+Syncing my block: 14eb_0000_1604771777_6 with 127.0.0.1:56216
+Sending Sync Complete to 127.0.0.1:56216
+Generated a block: 8a3e_0000_1604771784_7 with hash 9008
+Sending block: 8a3e_0000_1604771784_7 to 127.0.0.1:56216
+Received new block: 8a3e_0000_1604771783_7 with hash 004e from 127.0.0.1:56216 at 2020-11-07 23:26:26.304481
+Received new block: 004e_0000_1604771784_8 with hash b2c3 from 127.0.0.1:56216 at 2020-11-07 23:26:27.929888
+Received new block: b2c3_0000_1604771784_9 with hash 114b from 127.0.0.1:56216 at 2020-11-07 23:26:28.035722
+Generated a block: 114b_0000_1604771788_10 with hash 074d
+Sending block: 114b_0000_1604771788_10 to 127.0.0.1:56216
+Generated a block: 074d_0000_1604771789_11 with hash 532e
+Sending block: 074d_0000_1604771789_11 to 127.0.0.1:56216
+Generated a block: 532e_0000_1604771793_12 with hash a4be
+Sending block: 532e_0000_1604771793_12 to 127.0.0.1:56216
+Received new block: 074d_0000_1604771791_11 with hash d20e from 127.0.0.1:56216 at 2020-11-07 23:26:34.107626
+Received new block: d20e_0000_1604771791_12 with hash f3c6 from 127.0.0.1:56216 at 2020-11-07 23:26:34.814279
+Generated a block: a4be_0000_1604771795_13 with hash 53b1
+Sending block: a4be_0000_1604771795_13 to 127.0.0.1:56216

@@ -1,0 +1,38 @@
+Listening on port 54381
+connecting to seed 127.0.0.1:6000
+Sending listening info to 127.0.0.1:6000
+Received peer list from 127.0.0.1:6000 [['127.0.0.1', 54379]]
+Connecting to peers
+Received Peer List is [('127.0.0.1', 54379)]
+connecting to peer 127.0.0.1:54379
+sent connection request to all
+Number of out neighbours: 1
+Sending listening info to 127.0.0.1:54379
+Received information about listening port from 127.0.0.1:54379 Listening Port:54379
+Received k = 0 from 127.0.0.1:54379 via: Height:0
+Received Sync Complete from 127.0.0.1:54379 via: Sync Complete
+Generated a block: 9e1c_0000_1604767684_1 with hash 12a3
+Sending block: 9e1c_0000_1604767684_1 to 127.0.0.1:54379
+Generated a block: 9e1c_0000_1604767684_1 with hash 12a3
+Received stale block 9e1c_0000_1604767684_1 from 127.0.0.1:54379.
+Received new block: 9e1c_0000_1604767685_1 with hash e91a from 127.0.0.1:54379 at 2020-11-07 22:18:07.665037
+Received new block: 9e1c_0000_1604767687_1 with hash abf0 from 127.0.0.1:54379 at 2020-11-07 22:18:09.508760
+Received new block: 9e1c_0000_1604767688_1 with hash 1a9c from 127.0.0.1:54379 at 2020-11-07 22:18:10.147602
+Received new block: 9e1c_0000_1604767693_1 with hash 85c2 from 127.0.0.1:54379 at 2020-11-07 22:18:15.874610
+Received new block: 9e1c_0000_1604767695_1 with hash 1ec7 from 127.0.0.1:54379 at 2020-11-07 22:18:17.671822
+Received new block: 9e1c_0000_1604767696_1 with hash d409 from 127.0.0.1:54379 at 2020-11-07 22:18:18.834939
+Received new block: 9e1c_0000_1604767698_1 with hash 1f90 from 127.0.0.1:54379 at 2020-11-07 22:18:20.386505
+Received new block: 9e1c_0000_1604767699_1 with hash 9614 from 127.0.0.1:54379 at 2020-11-07 22:18:21.337378
+Generated a block: 9e1c_0000_1604767703_1 with hash 2196
+Sending block: 9e1c_0000_1604767703_1 to 127.0.0.1:54379
+Generated a block: 9e1c_0000_1604767705_1 with hash 65fa
+Sending block: 9e1c_0000_1604767705_1 to 127.0.0.1:54379
+Generated a block: 9e1c_0000_1604767707_1 with hash 1c39
+Sending block: 9e1c_0000_1604767707_1 to 127.0.0.1:54379
+Generated a block: 9e1c_0000_1604767710_1 with hash 11f8
+Sending block: 9e1c_0000_1604767710_1 to 127.0.0.1:54379
+Received stale block 9e1c_0000_1604767710_1 from 127.0.0.1:54379.
+Received new block: 9e1c_0000_1604767717_1 with hash 241c from 127.0.0.1:54379 at 2020-11-07 22:18:39.774703
+Received new block: 9e1c_0000_1604767722_1 with hash 65ce from 127.0.0.1:54379 at 2020-11-07 22:18:44.512953
+Generated a block: 9e1c_0000_1604767726_1 with hash ca41
+Sending block: 9e1c_0000_1604767726_1 to 127.0.0.1:54379
