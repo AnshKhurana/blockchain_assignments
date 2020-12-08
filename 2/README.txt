@@ -1,4 +1,4 @@
-# Assumptions:
+# Assumptions and implementation details:
 
 ## Role of nodes:
 Seed nodes are not considered regular nodes in the P2P network and do not participate in any protocols other than connecting new peers to the network.
@@ -17,19 +17,18 @@ previous_hash = hash of the previous block in the chain
 The blockchain tree at each node is stored in txt files BLOCK_DB_PID.output. This database is then used to generate the plots.
 
 ## Continuous Flooding:
-Our malicious node floods the victim nodes continuously and essentially blocks the victim nodes by flooding their verification queue. 
-@Kushagra confirm.
+Our malicious node floods the victim nodes continuously each after an interval of 1ms and essentially blocks the victim nodes by flooding their verification queue.
+
+## Verification time:
+We have simulated verification time of a block to be 2ms i.e. for each received block, a peer is expected to spend 2ms in verifying if the received block is valid in the blockchain or not.
 
 ## Using socket select calls
-
-We do not use multi-threading in our code. All processes are handling by socket selection. This enables real-time blocking in verification, otherwise flooding would not have any impact.
-@Kushagra can remove this section if unnecessary
+We do not use multi-threading in our code. All processes are handling by socket selection. 
 
 ## Assigning which nodes to flood
 Since we need to ensure that all victim nodes' hashing power has to sum up to flooding percentage and the malicious node has no way of estimating the hash power of each node, the nodes which have to be flooded are predecided by giving the --victim flag and the malicious nodes chooses to flood these.
 
 ## Flooding x% of Nodes:
-
 In the problem statement it was written that 10,20,30 % of the nodes have to be flooded. This has been assumed to be referring percentage in terms of 10,20,30% of the hashing power of the entire network. Thus, we make the malicious node flood nodes such that the total hash power of the nodes that are being flooded sum up to the hashing power. 
 
 In one experiment, we have given the entire flood percentage of hashing power to one node, 33% of hashing power to the malicious node, and rest of the hasing power is given to another node. So a total of 3 peer nodes make this simulation.
@@ -37,11 +36,7 @@ In one experiment, we have given the entire flood percentage of hashing power to
 In experiment 2, we keep 10 nodes, and divide the fp = [10,20,30] hash power among 10,20,30% population of the nodes.
 
 ## Network delays:
-Network delay has been set to 0.5 for all the experiments. These have been introduced artificially.
-@Kushagra explain why and how it is being implemented.
-
-## Verification time:
-@Kushagra explain what, why, how
+Network delay has been set to 0.5 for all the experiments. These have been simulated by mantaining a delay queue for each connection. As soon as a message is intended to be sent to a peer, its first sent to this queue along with a timestamp=current_time+delay indicating that this message is to be sent only when the current time is >= timestamp. The delay queue is checked frequently, and once the timer of a message expires, it is sent to the other peer and the other peer receives the message instantly, but the total delay = 0.5 due to late sending of the message.
 
 ## Plotting runs:
 IAT = [1, 2, 4, 6, 8, 10]
