@@ -41,7 +41,7 @@ def make_plot_combined():
         avf[fp] = avf_v
 
     save_plot_combined(mpu, iat_list, "MPU vs IAT", 'IAT (s)', 'MPU', 'mpu_vs_iat')
-    save_plot_combined(avf, iat_list, "Adversary fraction vs IAT", 'IAT (s)', 'Ad', 'avf_vs_iat')
+    save_plot_combined(avf, iat_list, "Adversary fraction vs IAT", 'IAT (s)', 'Adversary fraction', 'avf_vs_iat')
 
 def make_plot_single():
     for fp in [10]:
