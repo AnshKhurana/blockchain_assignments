@@ -1,29 +1,62 @@
 # Assumptions:
 
-## Database for chains
-The chain at each node is stored in txt files BLOCK_DB_PID.output
+## Role of nodes:
+Seed nodes are not considered regular nodes in the P2P network and do not participate in any protocols other than connecting new peers to the network.
+
+## Picking which chain to mine on when encountering forks:
+We assume that the longest chain is the main chain. Further, if there are two forks of the same length, we mine on the one we received earlier.
+
+## Contents of the blockchain block
+These are the contents of any block: self.previous_hash, self.merkel_root, self.timestamp, self.level
+level = level in the blockchain tree
+timestamp = generation timestamp
+merkel_root = deterministically set to "0000"
+previous_hash = hash of the previous block in the chain
+
+## Database for chains:
+The blockchain tree at each node is stored in txt files BLOCK_DB_PID.output. This database is then used to generate the plots.
 
 ## Continuous Flooding:
+Our malicious node floods the victim nodes continuously and essentially blocks the victim nodes by flooding their verification queue. 
+@Kushagra confirm.
 
+## Using socket select calls
+
+We do not use multi-threading in our code. All processes are handling by socket selection. This enables real-time blocking in verification, otherwise flooding would not have any impact.
+@Kushagra can remove this section if unnecessary
+
+## Assigning which nodes to flood
+Since we need to ensure that all victim nodes' hashing power has to sum up to flooding percentage and the malicious node has no way of estimating the hash power of each node, the nodes which have to be flooded are predecided by giving the --victim flag and the malicious nodes chooses to flood these.
+
+## Flooding x% of Nodes:
+
+In the problem statement it was written that 10,20,30 % of the nodes have to be flooded. This has been assumed to be referring percentage in terms of 10,20,30% of the hashing power of the entire network. Thus, we make the malicious node flood nodes such that the total hash power of the nodes that are being flooded sum up to the hashing power. 
+
+In one experiment, we have given the entire flood percentage of hashing power to one node, 33% of hashing power to the malicious node, and rest of the hasing power is given to another node. So a total of 3 peer nodes make this simulation.
+
+In experiment 2, we keep 10 nodes, and divide the fp = [10,20,30] hash power among 10,20,30% population of the nodes.
 
 ## Network delays:
 Network delay has been set to 0.5 for all the experiments. These have been introduced artificially.
-@Kushagra explain why
+@Kushagra explain why and how it is being implemented.
 
 ## Verification time:
-@Kushagra explain why
+@Kushagra explain what, why, how
 
 ## Plotting runs:
 IAT = [1, 2, 4, 6, 8, 10]
 
-
 # Instructions for running the code:
 
-## Running all experiments for plotting:
+## Running experiment 1 for data generation (3 peers):
 
 `python wrapper.py`
 
-## Plotting the results of the run
+## Running experiment 2 for data generation (10 peers):
+
+`python population_wrapper.py`
+
+## Plotting the results of the run - adjust per experiment
 
 `python make_plot.py`
 
